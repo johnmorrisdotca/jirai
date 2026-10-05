@@ -1,4 +1,5 @@
 import type { Language } from "./jirai.types.ts";
+/** Built-in English and Japanese strings used by the player and renderer. */
 export const STRINGS = {
   en: {
     board: "Minesweeper board", covered: "covered", flag: "flagged", question: "uncertain", empty: "empty", mine: "mine", wrong: "incorrect flag",
@@ -15,4 +16,5 @@ export const STRINGS = {
     error: "推測なしで解ける盤が見つかりませんでした。別のシード、別の開始マス、または少ない地雷で試してください。",
   },
 } as const;
+/** Returns the built-in interface strings for a locale. */
 export function words(language: Language = "en"): typeof STRINGS["en"] | typeof STRINGS["ja"] { return STRINGS[language]; }

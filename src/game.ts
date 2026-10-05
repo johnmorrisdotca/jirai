@@ -5,6 +5,7 @@ import { DEFAULT_SETTINGS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
 import type { Board, Game, Move, Settings, VisibleGame } from "./jirai.types.ts";
 
+/** Creates an unstarted game with covered cells and no dealt answer. */
 export function newGame(settings: Settings = DEFAULT_SETTINGS): Game {
   if (!validSettings(settings)) throw new RangeError("Invalid Minesweeper settings.");
   return { settings: { ...settings }, board: null, marks: Array.from({ length: settings.width * settings.height }, () => MARKS.covered), status: STATUSES.ready, exploded: null, moves: [], helped: false };
@@ -16,7 +17,7 @@ export function visibleGame(game: Game): VisibleGame {
     clues: game.marks.map((mark, cell) => !activeCell(game.settings, cell) ? -2 : mark === MARKS.open ? game.board?.clues[cell] ?? null : null) };
 }
 
-/** Accept a worker's dealt board without changing any moves made before the opening. */
+/** Attaches a worker-dealt board that matches the game's settings, preserving existing moves. */
 export function withBoard(game: Game, board: Board): Game {
   if (game.board !== null || (game.settings.shape ?? "rectangle") !== (board.settings.shape ?? "rectangle") || (Object.keys(DEFAULT_SETTINGS) as (keyof Settings)[]).some(key => game.settings[key] !== board.settings[key])) throw new Error("The board does not belong to this game.");
   return { ...game, board };

@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { mountJirai } from "./mount.ts";
 import type { JiraiProps } from "./react.types.ts";
 
-/** The plain-DOM game as a React component. Options are read on mount; give it a new key to load a new board. */
+/** Renders the DOM player inside a React-owned host. Options are read on mount; use a new key to load a new board. */
 export function JiraiBoard({ settings, progress, material, pieces, language, controls, onChange, onFinish, onError, ...element }: JiraiProps) {
   const host = useRef<HTMLDivElement>(null);
   const latest = useRef({ onChange, onFinish, onError });

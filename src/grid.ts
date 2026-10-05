@@ -17,6 +17,7 @@ export function validSettings(value: unknown): value is Settings {
     && (s.opening === "safe" || s.opening === "clear")
     && Number.isInteger(s.seed) && s.seed >= 0 && s.seed <= 0xffffffff;
 }
+/** Reports whether a row-major cell is inside the board's active shape. */
 export function validCell(settings: Settings, cell: number): boolean {
   return Number.isInteger(cell) && cell >= 0 && cell < settings.width * settings.height && activeCell(settings, cell);
 }
@@ -37,6 +38,7 @@ export function neighbours(settings: Settings, cell: number): number[] {
   }
   return [...out].sort((a, b) => a - b);
 }
+/** Precomputes the neighbour list for each row-major cell. */
 export function neighboursOf(settings: Settings): number[][] {
   return Array.from({ length: settings.width * settings.height }, (_, cell) => neighbours(settings, cell));
 }

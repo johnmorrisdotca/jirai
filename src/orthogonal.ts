@@ -7,6 +7,7 @@ import type { Board, GenerationOptions, Game, Settings } from "./jirai.types.ts"
 
 /** Identifies the four-neighbour rules and progress-code format. */
 export const ORTHOGONAL_VARIANT = "orthogonal" as const;
+/** Settings accepted by the four-neighbour-specific helpers. */
 export type OrthogonalSettings = Omit<Settings, "grid">;
 
 /** Starts a game under four-neighbour rules. */

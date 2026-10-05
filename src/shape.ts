@@ -1,4 +1,5 @@
 import type { Settings } from "./jirai.types.ts";
+/** Board silhouettes supported by settings. */
 export const SHAPES = ["rectangle", "heart", "star", "hexagon"] as const;
 /** Row-major addresses stay stable; omitted cells have no clue and no neighbours. */
 export function activeCell(settings: Settings, cell: number): boolean {
@@ -27,6 +28,7 @@ export function activeCell(settings: Settings, cell: number): boolean {
     default: return true;
   }
 }
+/** Returns all active cells in stable row-major order. */
 export function activeCells(settings: Settings): number[] {
   return Array.from({ length: settings.width * settings.height }, (_, cell) => cell).filter(cell => activeCell(settings, cell));
 }

@@ -5,6 +5,7 @@ import type { JiraiMount } from "./ui.types.ts";
 
 // Importing this file on a server is harmless; only defineJirai registers the tag.
 const ElementBase = typeof HTMLElement === "undefined" ? class {} as typeof HTMLElement : HTMLElement;
+/** Configurable `<jirai-board>` element that owns its mounted game. */
 export class JiraiElement extends ElementBase {
   private mounted: JiraiMount | null = null;
   static observedAttributes = ["width", "height", "mines", "seed", "grid", "shape", "no-guess", "material", "pieces", "lang"];
@@ -21,4 +22,5 @@ export class JiraiElement extends ElementBase {
     } catch (error) { this.dispatchEvent(new CustomEvent("jirai-error", { detail: error })); }
   }
 }
+/** Registers the `<jirai-board>` custom element once in a registry. */
 export function defineJirai(registry: CustomElementRegistry = customElements): void { if (!registry.get("jirai-board")) registry.define("jirai-board", JiraiElement); }

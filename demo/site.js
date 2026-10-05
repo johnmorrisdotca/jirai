@@ -58,6 +58,8 @@ translate();
 
 const pageWords = Object.fromEntries(["en", "ja"].map(lang => [lang, {
   ...Object.fromEntries(Object.entries(PAGE_WORDS).map(([key, value]) => [key, value[lang]])),
+  pageApi: lang === "ja" ? "APIリファレンス" : "API reference",
+  nameLink: lang === "ja" ? "名前について" : "About the name",
   pitch: lang === "ja" ? "四近傍の直交盤、正方形、六角形、端がつながる盤の地雷パズル。盤の大きさ、地雷の数、素材と印を選び、数字を手がかりに安全なマスを開けましょう。" : "Minesweeper on orthogonal four-neighbour grids, squares, hexagons and a board whose edges join. Choose the size, mine count, material and markers; read the numbers and open every safe cell.",
   name: lang === "ja" ? "Jirai（地雷）は、地面に埋められた爆弾のこと。" : "Jirai (地雷) is Japanese for a land mine.",
   foot: lang === "ja" ? "数字を手がかりに、地雷を避けます。" : "Read the clues and leave the mines alone.",

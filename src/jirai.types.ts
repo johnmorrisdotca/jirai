@@ -1,7 +1,10 @@
-/** A cell's number is its row-major place on the board, starting at zero. */
+/** Neighbour topology used to count the clues around each cell. */
 export type Grid = "square" | "orthogonal" | "hex" | "wrap";
+/** Current game state, including whether a mine has been hit. */
 export type Status = "ready" | "playing" | "won" | "lost";
+/** Player-facing state of one cell; the answer is never a mark. */
 export type Mark = "covered" | "flag" | "question" | "open";
+/** Board dimensions and rules used to deal and validate a game. */
 export type Settings = {
   /** Shape omits cells; rectangle is the compatible default. Wrap requires rectangle. */
   shape?: "rectangle" | "heart" | "star" | "hexagon";
@@ -15,7 +18,9 @@ export type Settings = {
   opening: "safe" | "clear";
   seed: number;
 };
+/** A reveal, mark-cycle, or numbered-cell chord applied to a game. */
 export type Move = { kind: "reveal" | "mark" | "chord"; cell: number };
+/** A dealt board including its answer; keep it off public clients. */
 export type Board = {
   settings: Settings;
   mines: readonly boolean[];
@@ -34,6 +39,7 @@ export type Game = {
   /** A proved hint has been shown during this run. */
   helped: boolean;
 };
+/** Answer-free state suitable for deductions, hints, and public display. */
 export type VisibleGame = {
   settings: Settings;
   /** Null is hidden, including flags. Only opened cells give a clue. */
@@ -41,7 +47,9 @@ export type VisibleGame = {
   marks: readonly Mark[];
   status: Status;
 };
+/** An exact count over unknown cells, with the clues that supplied it. */
 export type Constraint = { cells: readonly number[]; mines: number; sources: readonly number[] };
+/** Certain safe cells and mines proved from visible clues. */
 export type Deduction = {
   safe: readonly number[];
   mines: readonly number[];
@@ -50,7 +58,11 @@ export type Deduction = {
   /** A conflicting clue, or a board with no consistent mine placement. */
   contradiction: boolean;
 };
+/** Work limits for seeded board generation and its no-guess check. */
 export type GenerationOptions = { attempts?: number; enumerate?: boolean };
+/** Supported interface copy locales. */
 export type Language = "en" | "ja";
+/** Board colours for drawing and mounted play. */
 export type Material = "ivory" | "wood" | "slate";
+/** Symbols used to mark mines. */
 export type Pieces = "flags" | "stones" | "flowers";
