@@ -1,5 +1,9 @@
 /** Neighbour topology used to count the clues around each cell. */
 export type Grid = "square" | "orthogonal" | "hex" | "wrap";
+/** A difficulty level: easy, medium, hard or extra-hard. */
+export type Level = "easy" | "medium" | "hard" | "extra-hard";
+/** The 0.1 and 0.2 names for easy, medium and hard, still accepted wherever a level is. */
+export type LevelAlias = "beginner" | "intermediate" | "expert";
 /** Current game state, including whether a mine has been hit. */
 export type Status = "ready" | "playing" | "won" | "lost";
 /** Player-facing state of one cell; the answer is never a mark. */
@@ -26,6 +30,7 @@ export type Board = {
   mines: readonly boolean[];
   clues: readonly number[];
   first: number;
+  /** Which candidate this deal was: below the `attempts` limit it is a random layout, at or above it a repaired one. */
   attempt: number;
 };
 /** Rules data includes the answer; never send it to a competitive client. Use visibleGame for hints and drawing. */
@@ -58,8 +63,12 @@ export type Deduction = {
   /** A conflicting clue, or a board with no consistent mine placement. */
   contradiction: boolean;
 };
-/** Work limits for seeded board generation and its no-guess check. */
-export type GenerationOptions = { attempts?: number; enumerate?: boolean };
+/**
+ * Work limits for seeded board generation and its no-guess check. `attempts` is the number of random layouts tried
+ * first; `repairs` is how many single-mine moves the repair stage may try on the closest of them (0, or `repair:
+ * false`, keeps the 0.2 behaviour of giving up after the attempts); `enumerate` switches the exact small-frontier check.
+ */
+export type GenerationOptions = { attempts?: number; repairs?: number; repair?: boolean; enumerate?: boolean };
 /** Supported interface copy locales. */
 export type Language = "en" | "ja";
 /** Board colours for drawing and mounted play. */

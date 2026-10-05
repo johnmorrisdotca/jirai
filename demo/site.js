@@ -1,9 +1,11 @@
-import { DEFAULT_SETTINGS, PRESETS, dailySeed, gameProgress, activeCells } from "./dist/index.js";
+import { DEFAULT_SETTINGS, PRESETS, dailySeed, gameProgress, activeCells, levelNamed, levelSettings } from "./dist/index.js";
 import { mountJirai } from "./dist/play-entry.js";
 import { PAGE_WORDS } from "./words.js";
 const form = document.querySelector("#settings");
 const notice = document.querySelector("#notice");
 const params = new URLSearchParams(location.search);
+// A level (or one of its older names: beginner, intermediate, expert) sets the size first; an explicit width, height or mines still wins.
+if (levelNamed(params.get("level"))) { form.elements.preset.value = levelNamed(params.get("level")); for (const name of ["grid","shape"]) if (params.has(name)) form.elements[name].value = params.get(name); applyLevel(); }
 for (const name of ["width","height","mines","seed","grid","shape","opening","material","pieces"]) if (params.has(name)) form.elements[name].value = params.get(name);
 if (params.has("noGuess")) form.elements.noGuess.checked = params.get("noGuess") === "1";
 let language = params.get("language") === "ja" ? "ja" : "en";
@@ -21,16 +23,23 @@ catch { table = mountJirai(document.querySelector("#game"), { ...options, settin
 const restored = table.game().settings;
 for (const name of ["width","height","mines","seed","grid","shape","opening"]) form.elements[name].value = restored[name] ?? "rectangle";
 form.elements.noGuess.checked = restored.noGuess;
+syncPreset();
 function heading() { document.querySelector("#board-title").textContent = (language === "ja" ? { square: "正方形の盤", orthogonal: "直交の盤", hex: "六角形の盤", wrap: "つながる盤" } : { square: "Square field", orthogonal: "Orthogonal field", hex: "Hexagonal field", wrap: "Wraparound field" })[table.game().settings.grid]; }
 heading();
 function begin() { notice.textContent = ""; try { table.load(read()); table.set(appearance()); heading(); } catch (error) { notice.textContent = error.message; } }
 form.addEventListener("submit", (event) => { event.preventDefault(); begin(); });
-form.elements.preset.addEventListener("change", () => { const preset = PRESETS[form.elements.preset.value]; if (preset) { form.elements.shape.value = "rectangle"; shapeLimits(); for (const name of ["width","height","mines"]) form.elements[name].value = preset[name]; } });
+form.elements.preset.addEventListener("change", () => {
+  if (levelNamed(form.elements.preset.value)) { shapeLimits(); applyLevel(); return; }
+  const preset = PRESETS[form.elements.preset.value];
+  if (preset) { form.elements.shape.value = "rectangle"; shapeLimits(); for (const name of ["width","height","mines"]) form.elements[name].value = preset[name]; }
+});
+for (const name of ["width","height","mines"]) form.elements[name].addEventListener("input", syncPreset);
 for (const name of ["material","pieces"]) form.elements[name].addEventListener("change", () => table.set(appearance()));
 document.querySelector("#random").addEventListener("click", () => { form.elements.seed.value = crypto.getRandomValues(new Uint32Array(1))[0]; begin(); });
 document.querySelector("#daily").addEventListener("click", () => {
   form.elements.shape.value = "rectangle"; shapeLimits();
-  for (const name of ["width","height","mines"]) form.elements[name].value = PRESETS.beginner[name];
+  for (const name of ["width","height","mines"]) form.elements[name].value = PRESETS.easy[name];
+  form.elements.preset.value = "easy";
   form.elements.noGuess.checked = true; form.elements.opening.value = "clear";
   form.elements.seed.value = dailySeed(new Date().toISOString().slice(0,10), form.elements.grid.value); begin();
   table.play(Math.floor(table.game().settings.height / 2) * table.game().settings.width + Math.floor(table.game().settings.width / 2));
@@ -74,13 +83,30 @@ function shapeLimits() {
   if (shaped && form.elements.grid.value === "wrap") form.elements.grid.value = "square";
   form.elements.width.min = form.elements.height.min = shaped ? "9" : "3";
 }
+function applyLevel() {
+  const level = levelNamed(form.elements.preset.value);
+  if (level === null) return;
+  const size = levelSettings(level, { grid: form.elements.grid.value, shape: form.elements.shape.value });
+  for (const name of ["width","height","mines"]) form.elements[name].value = size[name];
+}
+// Show which level the numbers in the form make, or Choose your own when they make none.
+function syncPreset() {
+  const now = ["width","height","mines"].map(name => Number(form.elements[name].value)).join("x");
+  const grid = form.elements.grid.value, shape = form.elements.shape.value;
+  const level = ["easy","medium","hard","extra-hard"].find(name => { const size = levelSettings(name, { grid, shape }); return `${size.width}x${size.height}x${size.mines}` === now; });
+  const preset = shape === "rectangle" ? ["wide","tall"].find(name => ["width","height","mines"].map(key => PRESETS[name][key]).join("x") === now) : undefined;
+  form.elements.preset.value = level ?? preset ?? "custom";
+}
 form.elements.shape.addEventListener("change", () => {
+  shapeLimits();
+  if (levelNamed(form.elements.preset.value)) { applyLevel(); return; }
   if (form.elements.shape.value !== "rectangle") {
     form.elements.width.value = Math.max(17, Number(form.elements.width.value));
     form.elements.height.value = Math.max(17, Number(form.elements.height.value));
     form.elements.mines.value = Math.max(1, Math.floor(activeCells(read()).length * .12));
     form.elements.preset.value = "custom";
   }
-  shapeLimits();
 });
+// The hexagon outline is a different cut-out under hexagonal rules, so a level's mine count follows the grid too.
+form.elements.grid.addEventListener("change", () => { if (levelNamed(form.elements.preset.value) && form.elements.shape.value !== "rectangle") applyLevel(); });
 shapeLimits();

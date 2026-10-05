@@ -49,7 +49,8 @@ const board = makeOrthogonalBoard(settings, 40); // counts only edge-sharing nei
 - **Four rule sets:** square grids count eight neighbours, orthogonal grids count four, hex grids count six axial neighbours, and wraparound grids join opposite square edges.
 - **Board outlines:** rectangles, hearts, stars and hexagon outlines. Shaped boards have cut-outs; wraparound works with rectangles.
 - **A fair first move:** choose a safe first cell or a clear opening with all its neighbours safe.
-- **Verified no-guess deals:** optional deduction-only dealing accepts a board only when the solver proves every safe cell from the opening. It throws `GenerationError` when the bounded search cannot prove one.
+- **Four levels:** easy (9×9, 10 mines), medium (16×16, 40), hard (30×16, 99) and extra-hard (40×24, 240), on every rule and outline. The old names `beginner`, `intermediate` and `expert` still work and mean easy, medium and hard.
+- **Verified no-guess deals:** optional deduction-only dealing accepts a board only when the solver proves every safe cell from the opening, even at extra-hard's 25% mines. It throws `GenerationError` when the bounded search cannot prove one.
 - **Fixed seeded fields:** after the opening, mines never move. A seed and settings reproduce the same deal.
 - **Familiar play:** reveal, flag, question-mark, chord, flood-open, explained hint, timer, undo by saved replay, and a just-the-board dialog.
 - **Accessible controls:** keyboard navigation, pointer and touch, long press to mark, English and Japanese strings, and board labels read by assistive technology.
@@ -104,11 +105,37 @@ The optional React entry exports `JiraiBoard` from `@johnmorrisdotca/jirai/react
 | `seed` | Integer from 0 through 4,294,967,295. A seed is interpreted together with all other settings and the first cell. |
 | `material`, `pieces`, `language` | `ivory`, `wood`, `slate`; `flags`, `stones`, `flowers`; `en`, `ja`. |
 
-The built-in presets are beginner (9×9, 10 mines), intermediate (16×16, 40), expert (30×16, 99), wide (21×9, 24), and tall (9×21, 24). They are starting points, not calibrated difficulty ratings.
+## Levels
+
+| Level | Size | Mines | Mines per cell | Old name |
+| --- | --- | --- | --- | --- |
+| `easy` | 9×9 | 10 | 12% | `beginner` |
+| `medium` | 16×16 | 40 | 16% | `intermediate` |
+| `hard` | 30×16 | 99 | 21% | `expert` |
+| `extra-hard` | 40×24 | 240 | 25% | |
+
+`levelNamed(name)` returns the level a name means (`extra-hard` may also be written `extra hard`, `extra_hard` or `extraHard`) or `null`. `levelSettings(level, { grid, shape })` returns `{ width, height, mines }`: a rectangle gets the numbers above, and a heart, star or hexagon outline keeps the level's width and height and its share of mines over the cells that are left. `PRESETS` holds the four levels, the three old names, and `wide` (21×9, 24) and `tall` (9×21, 24).
+
+```ts
+import { DEFAULT_SETTINGS, levelSettings, newGame } from "@johnmorrisdotca/jirai";
+
+const game = newGame({ ...DEFAULT_SETTINGS, ...levelSettings("extra-hard", { grid: "hex", shape: "star" }), grid: "hex", shape: "star", seed: 7 });
+```
+
+The levels step up a measured difficulty. `measureBoard(board)` solves a dealt board with the same deductions the hints use and reports its `density`, the share of cells proved by anything beyond one clue's count (`multiStep`), the longest chain of deductions (`depth`), the cells proved by each kind of reasoning, and a `score` (`100 × density + 100 × multiStep + depth ÷ 4`) that puts boards in order. It is not a prediction of how long a person takes. Mean score of 30 seeds, rectangles, opening in the middle:
+
+| Rule | easy | medium | hard | extra-hard |
+| --- | --- | --- | --- | --- |
+| square (8 neighbours) | 26 | 41 | 63 | 85 |
+| orthogonal (4) | 18 | 26 | 38 | 49 |
+| hexagonal (6) | 21 | 31 | 49 | 65 |
+| wraparound (8) | 25 | 41 | 67 | 96 |
+
+Orthogonal clues carry less information, so its numbers are smaller at every level; each level is still at least a quarter harder than the one before it on every rule.
 
 ## Engine and saved games
 
-`newGame(settings)` returns an immutable ready game with no dealt mines. `play(game, move)` returns a new state; a move that cannot be made returns the original state. `visibleGame(game)` strips hidden mine locations. `hintFor(visibleGame)` reads only opened clues: flags are marks, never evidence. `makeBoard(settings, first, options?)` deals directly, and `isSolvable(board)` independently checks whether its deduction solver can finish.
+`newGame(settings)` returns an immutable ready game with no dealt mines. `play(game, move)` returns a new state; a move that cannot be made returns the original state. `visibleGame(game)` strips hidden mine locations. `hintFor(visibleGame)` reads only opened clues: flags are marks, never evidence. `makeBoard(settings, first, options?)` deals directly, and `isSolvable(board)` independently checks whether its deduction solver can finish. The solver runs the hint engine's deductions to a fixed point in one pass, and is tested to agree with `deduce` on every board.
 
 `gameProgress(game)` saves the settings and move history, not an unchecked answer. `gameFromProgress(code)` replays and validates the moves, returning `null` for invalid data. The original square, hex and wraparound games use version 1 records. Orthogonal games use version 2 with `variant: "orthogonal"`; `decodeOrthogonalGame` accepts only those records. Keep this distinction when storing old games.
 
@@ -122,7 +149,26 @@ Materials are `ivory`, `wood` and `slate`. Marker sets are `flags`, `stones` and
 
 ## Limits and browser support
 
-The board is capped at 60 cells per side and 2,400 cells overall. Shapes need at least 9×9; wraparound is rectangular. The no-guess generator tries at most 128 candidates by default. `makeBoard(settings, first, { attempts })` accepts 1–10,000 attempts and can enable or disable local enumeration with `enumerate`; failure raises `GenerationError` rather than silently returning a guessing field. Very dense or shaped boards may exhaust that budget. For synchronous server use, consider running difficult custom settings in a worker.
+The board is capped at 60 cells per side and 2,400 cells overall. Shapes need at least 9×9; wraparound is rectangular.
+
+**How a no-guess field is dealt.** First the generator draws up to 128 random layouts (`attempts`), exactly as 0.2 did, so every field those versions dealt is dealt again, unchanged, for the same seed. If none of them can be finished by deduction it takes the closest and repairs it: single mines are moved next to the place the solver stopped, a move is kept when it leaves the solver no worse off, and the search starts over from a new layout when it stalls. The work is counted in layouts tried (`repairs`, 12 per cell by default), never in time, so a seed always gives the same field. Every field returned is proved by the same deductions either way; `board.attempt` at or above `attempts` says the field was repaired. `makeBoard(settings, first, { attempts, repairs, repair, enumerate })` accepts 1–10,000 attempts, 0–1,000,000 repairs, `repair: false` for the 0.2 behaviour of giving up after the random layouts, and `enumerate` to switch the exact small-frontier check. Failure raises `GenerationError` rather than returning a guessing field.
+
+**Measured generation** (200 seeds for each rule, outline and level, with the opening on a random cell; Node 24 on one core of a shared laptop, so read the milliseconds as an order of magnitude). Every level on every combination dealt a verified field every time, except for the one case below. The slowest single deal in the whole run was 230 ms; the median at extra-hard, the largest and densest level, was 36 ms for a square rectangle (the slowest median), 25 ms orthogonal, 22 ms hexagonal and 3 ms wraparound; its 95th percentile was at most 55 ms. Before 0.3, orthogonal `expert` boards failed five times in six and square ones took over half a second.
+
+| Level | Median | 95th percentile | Slowest |
+| --- | --- | --- | --- |
+| easy | 0.1–0.5 ms | 0.3–1.1 ms | 3.3 ms |
+| medium | 0.2–1.7 ms | 0.4–3.1 ms | 3.6 ms |
+| hard | 0.6–7.7 ms | 1.2–11.8 ms | 16.7 ms |
+| extra-hard | 3–36 ms | 10–55 ms | 229 ms |
+
+**What a field cannot do, and what is done about it.**
+
+- A cell with no neighbours under the rules (a tip of an orthogonal or hexagonal star) can never be told by a clue. `makeBoard` refuses an opening on one with `GenerationError` code `"opening"` (open another cell), and a field whose opening can reach only part of the outline makes the cut-off cells mines, since nobody has to find a mine to win. This is the only case in which an extra-hard deal fails: 2 of 340 cells on an orthogonal star, 1 on a hexagonal star, 0 on any other outline.
+- Extra-hard is not narrowed for any rule or outline: all of them reach 25% reliably. A custom field much denser than that is still not promised; it raises `GenerationError` when the work budget runs out.
+- The widest fields (30 and 40 columns) scroll sideways inside the board on a narrow screen, as hard always has.
+
+For synchronous server use, consider running a deal in a worker; a browser deals extra-hard in the board's own worker without a pause.
 
 The browser player uses ES modules, SVG, custom elements, dialogs and module workers. Serve built files over HTTP; `file:` pages cannot load its worker. The engine and drawing functions do not need DOM globals. Development and tests require Node 22 or later.
 

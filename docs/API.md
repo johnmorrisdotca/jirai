@@ -18,11 +18,17 @@ Jirai has a pure rules engine, a drawing model, a browser player, and optional f
 
 - `newGame(settings?)` creates a ready immutable game without a dealt board.
 - `play(game, { kind, cell })` applies `reveal`, `mark` or `chord`; invalid moves return the same game.
-- `makeBoard(settings, first, { attempts?, enumerate? }?)` deals at the first cell. No-guess mode returns only a board proved solvable from that opening; exhaustion throws `GenerationError` (`settings`, `opening` or `exhausted`).
+- `makeBoard(settings, first, { attempts?, repairs?, repair?, enumerate? }?)` deals at the first cell. No-guess mode returns only a board proved solvable from that opening: random layouts first, then repair of the closest. Exhaustion, or an opening on a cell that touches nothing, throws `GenerationError` (`settings`, `opening` or `exhausted`).
 - `isSolvable(board, enumerate?)` verifies a completed deal using the visible clues.
 - `visibleGame(game)` removes hidden mine positions. `deduce(visible, knownMines?, enumerate?)` and `hintFor(visible)` return certain deductions, their reason, source clues and contradiction status.
 - `neighbours(settings, cell)`, `neighboursOf(settings)`, `activeCell(settings, cell)` and `activeCells(settings)` describe topology and playable shapes.
 - `DEFAULT_SETTINGS`, `PRESETS`, `GRIDS`, `MARKS`, `MOVES` and `STATUSES` provide defaults and stable enum-like values.
+
+## Levels and difficulty
+
+- `LEVELS` is `easy`, `medium`, `hard`, `extra-hard`; `LEVEL_SIZES` has each one's width, height and mines; `LEVEL_ALIASES` maps the 0.1/0.2 names `beginner`, `intermediate` and `expert` to the first three.
+- `levelNamed(name)` returns the level a name means, aliases and spellings of extra-hard included, or `null`. `levelSettings(level, { grid?, shape? })` returns `{ width, height, mines }`, keeping the level's share of mines on a shaped board.
+- `measureBoard(board)` returns the board's `density`, `multiStep` share, `depth`, proofs by kind, `opening` share, `solvable` and an ordering `score`.
 
 ## Orthogonal rules variant
 

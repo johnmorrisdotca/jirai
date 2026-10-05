@@ -77,7 +77,7 @@ describe("dealing and verified boards", () => {
   it("reports a failed proof budget rather than returning an unverified board", () => {
     let failures = 0;
     for (let seed = 0; seed < 50; seed += 1) {
-      try { makeBoard({ ...DEFAULT_SETTINGS, width: 5, height: 5, mines: 10, opening: "safe", seed }, 12, { attempts: 1 }); }
+      try { makeBoard({ ...DEFAULT_SETTINGS, width: 5, height: 5, mines: 10, opening: "safe", seed }, 12, { attempts: 1, repair: false }); }
       catch (error) { expect(error).toBeInstanceOf(GenerationError); expect((error as GenerationError).code).toBe("exhausted"); failures += 1; }
     }
     expect(failures).toBeGreaterThan(0);

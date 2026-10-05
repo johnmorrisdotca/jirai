@@ -15,21 +15,33 @@ export const GRID_SPECS: Record<Grid, { offsets: readonly (readonly [number, num
   hex: { offsets: [[-1,0],[1,0],[0,-1],[1,-1],[-1,1],[0,1]], wrap: false },
   wrap: { offsets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], wrap: true },
 };
-/** Common minefield dimensions and mine counts. */
+/** The four difficulty levels, easiest first. Each is a larger and denser field than the one before. */
+export const LEVELS = ["easy", "medium", "hard", "extra-hard"] as const;
+/** The 0.1 and 0.2 names for the first three levels. They are still accepted wherever a level is. */
+export const LEVEL_ALIASES = { beginner: "easy", intermediate: "medium", expert: "hard" } as const;
+/** Size and mine count of each level on a rectangular board. Shaped boards keep the size and the density. */
+export const LEVEL_SIZES: Record<(typeof LEVELS)[number], { width: number; height: number; mines: number }> = {
+  easy: { width: 9, height: 9, mines: 10 },
+  medium: { width: 16, height: 16, mines: 40 },
+  hard: { width: 30, height: 16, mines: 99 },
+  "extra-hard": { width: 40, height: 24, mines: 240 },
+};
+/** Common minefield dimensions and mine counts. The levels, their older names, and two shapes of field. */
 export const PRESETS = {
-  beginner: { width: 9, height: 9, mines: 10 },
-  intermediate: { width: 16, height: 16, mines: 40 },
-  expert: { width: 30, height: 16, mines: 99 },
+  ...LEVEL_SIZES,
+  beginner: LEVEL_SIZES.easy,
+  intermediate: LEVEL_SIZES.medium,
+  expert: LEVEL_SIZES.hard,
   wide: { width: 21, height: 9, mines: 24 },
   tall: { width: 9, height: 21, mines: 24 },
 } as const;
-/** Default beginner game, with a verified no-guess board and clear opening. */
-export const DEFAULT_SETTINGS: Settings = { ...PRESETS.beginner, grid: GRIDS.square, noGuess: true, opening: "clear", seed: 1 };
+/** Default easy game, with a verified no-guess board and clear opening. */
+export const DEFAULT_SETTINGS: Settings = { ...LEVEL_SIZES.easy, grid: GRIDS.square, noGuess: true, opening: "clear", seed: 1 };
 /** Largest width or height accepted by settings validation. */
 export const MAX_SIDE = 60;
 /** Largest total cell count accepted by settings validation. */
 export const MAX_CELLS = 2400;
-/** Default candidate-board budget for verified generation. */
+/** Default number of random layouts tried before a no-guess deal falls back to repairing the closest one. */
 export const GENERATION_ATTEMPTS = 128;
 /** Largest frontier enumerated for exact deductions. */
 export const ENUMERATION_CELLS = 18;
