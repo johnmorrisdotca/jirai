@@ -1,28 +1,74 @@
 {
   "name": "@johnmorrisdotca/jirai",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Minesweeper on square, hexagonal and wraparound boards: seeded games, a safe opening, verified no-guess boards, explained hints, configurable materials and markers, and a playable board for any page. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",
   "author": "John Morris",
-  "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/jirai.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnmorrisdotca/jirai.git"
+  },
   "homepage": "https://johnmorrisdotca.github.io/jirai/",
-  "bugs": { "url": "https://github.com/johnmorrisdotca/jirai/issues" },
-  "keywords": ["minesweeper", "puzzle", "hexagonal", "orthogonal", "no-guess", "typescript", "seeded", "web-component", "itsutsu"],
+  "bugs": {
+    "url": "https://github.com/johnmorrisdotca/jirai/issues"
+  },
+  "keywords": [
+    "minesweeper",
+    "puzzle",
+    "hexagonal",
+    "orthogonal",
+    "no-guess",
+    "typescript",
+    "seeded",
+    "web-component",
+    "itsutsu"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
-    "./orthogonal": { "types": "./dist/orthogonal.d.ts", "default": "./dist/orthogonal.js" },
-    "./play": { "types": "./dist/play-entry.d.ts", "default": "./dist/play-entry.js" },
-    "./draw": { "types": "./dist/draw-entry.d.ts", "default": "./dist/draw-entry.js" },
-    "./element": { "types": "./dist/element.d.ts", "default": "./dist/element.js" },
-    "./element/define": { "types": "./dist/element-define.d.ts", "default": "./dist/element-define.js" },
-    "./react": { "types": "./dist/react.d.ts", "default": "./dist/react.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./orthogonal": {
+      "types": "./dist/orthogonal.d.ts",
+      "default": "./dist/orthogonal.js"
+    },
+    "./play": {
+      "types": "./dist/play-entry.d.ts",
+      "default": "./dist/play-entry.js"
+    },
+    "./draw": {
+      "types": "./dist/draw-entry.d.ts",
+      "default": "./dist/draw-entry.js"
+    },
+    "./element": {
+      "types": "./dist/element.d.ts",
+      "default": "./dist/element.js"
+    },
+    "./element/define": {
+      "types": "./dist/element-define.d.ts",
+      "default": "./dist/element-define.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "default": "./dist/react.js"
+    }
   },
-  "sideEffects": ["./dist/element-define.js"],
-  "files": ["dist", "src", "README.md", "LICENSE", "CHANGELOG.md"],
-  "engines": { "node": ">=22" },
+  "sideEffects": [
+    "./dist/element-define.js"
+  ],
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.check.json",
@@ -34,13 +80,26 @@
     "test:package": "pnpm build && node scripts/check-package.mjs",
     "prepublishOnly": "pnpm check && pnpm test:package"
   },
-  "peerDependencies": { "react": ">=18" },
-  "peerDependenciesMeta": { "react": { "optional": true } },
-  "devDependencies": {
-    "@eslint/js": "^9.0.0", "eslint": "^9.0.0", "typescript-eslint": "^8.0.0",
-    "typescript": "^5.9.0", "vitest": "^4.0.0", "@playwright/test": "^1.58.0",
-    "@types/react": "^19.0.0", "react": "^19.0.0"
+  "peerDependencies": {
+    "react": ">=18"
   },
-  "publishConfig": { "access": "public" },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "typescript-eslint": "^8.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.0.0",
+    "@playwright/test": "^1.58.0",
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "packageManager": "pnpm@10.11.0"
 }
