@@ -12,9 +12,12 @@ try {
   const source = `import { newGame, play, DEFAULT_SETTINGS } from '@johnmorrisdotca/jirai';
 import { mountJirai } from '@johnmorrisdotca/jirai/play';
 import { boardModel } from '@johnmorrisdotca/jirai/draw';
+import { newOrthogonalGame, orthogonalNeighbours, encodeOrthogonalGame, decodeOrthogonalGame } from '@johnmorrisdotca/jirai/orthogonal';
 import { JiraiElement } from '@johnmorrisdotca/jirai/element';
 const g = play(newGame({...DEFAULT_SETTINGS,noGuess:false}), {kind:'reveal',cell:40});
-if (!g.board || boardModel(g).cells.length !== 81 || typeof mountJirai !== 'function' || typeof JiraiElement !== 'function') throw Error('Package smoke check failed');`;
+const orthogonal = newOrthogonalGame({width:9,height:9,mines:10,noGuess:false,opening:'safe',seed:7});
+if (!g.board || boardModel(g).cells.length !== 81 || typeof mountJirai !== 'function' || typeof JiraiElement !== 'function'
+  || orthogonalNeighbours(orthogonal.settings, 40).length !== 4 || decodeOrthogonalGame(encodeOrthogonalGame(orthogonal))?.settings.grid !== 'orthogonal') throw Error('Package smoke check failed');`;
   await writeFile(join(temp,"check.mjs"), source);
   execFileSync(process.execPath, ["check.mjs"], { cwd: temp, stdio: "inherit" });
   const manifest = JSON.parse(await readFile("package.json", "utf8"));

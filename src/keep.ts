@@ -4,6 +4,9 @@ import type { Game, Move } from "./jirai.types.ts";
 
 /** Keep settings and moves, never an unchecked answer array. Version the deal before changing it. */
 export function gameProgress(game: Game): string {
+  if (game.settings.grid === "orthogonal") {
+    return JSON.stringify({ version: 2, variant: "orthogonal", settings: game.settings, moves: game.moves, helped: game.helped });
+  }
   return JSON.stringify({ version: 1, settings: game.settings, moves: game.moves, helped: game.helped });
 }
 
@@ -12,7 +15,10 @@ export function gameFromProgress(progress: string): Game | null {
   if (progress.length > 1_000_000) return null;
   try {
     const data = JSON.parse(progress);
-    if (data.version !== 1 || !validSettings(data.settings) || !Array.isArray(data.moves) || data.moves.length > 20_000) return null;
+    const orthogonalCode = data.version === 2 && data.variant === "orthogonal";
+    if ((!orthogonalCode && data.version !== 1) || !validSettings(data.settings)
+      || orthogonalCode !== (data.settings.grid === "orthogonal")
+      || !Array.isArray(data.moves) || data.moves.length > 20_000) return null;
     if (data.helped !== undefined && typeof data.helped !== "boolean") return null;
     let game = newGame(data.settings);
     for (const move of data.moves) {
@@ -29,6 +35,7 @@ export function gameFromProgress(progress: string): Game | null {
 export function dailySeed(day: string, grid = "square"): number {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || new Date(`${day}T00:00:00Z`).toISOString().slice(0, 10) !== day) throw new RangeError("Use a real day as YYYY-MM-DD.");
   let hash = 2166136261;
-  for (const letter of `jirai:1:${day}:${grid}`) hash = Math.imul(hash ^ letter.charCodeAt(0), 16777619) >>> 0;
+  const version = grid === "orthogonal" ? 2 : 1;
+  for (const letter of `jirai:${version}:${day}:${grid}`) hash = Math.imul(hash ^ letter.charCodeAt(0), 16777619) >>> 0;
   return hash;
 }

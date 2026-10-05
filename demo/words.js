@@ -91,6 +91,14 @@ export const PAGE_WORDS = {
     "en": " Open every cell without a mine to finish. When flags match a revealed number, tap it to open the neighbours together.",
     "ja": "地雷のないマスをすべて開けたら完成。周りの旗の数が数字と同じなら、数字を押すと周りのマスを開けます。"
   },
+  "orthohead": {
+    "en": "Four neighbours",
+    "ja": "隣は四つ"
+  },
+  "ortho": {
+    "en": "Orthogonal Jirai counts only the cells above, below, left and right. It is a separate rules variant from the eight-neighbour square board.",
+    "ja": "直交版では上下左右の四マスだけを数えます。八方向の正方形盤とは別のルールです。"
+  },
   "hexhead": {
     "en": "Six neighbours",
     "ja": "隣は六つ"
@@ -158,6 +166,10 @@ export const PAGE_WORDS = {
   "option0": {
     "en": "Square · eight neighbours",
     "ja": "正方形 · 隣は八つ"
+  },
+  "optionOrthogonal": {
+    "en": "Orthogonal · four neighbours",
+    "ja": "直交 · 隣は四つ"
   },
   "option1": {
     "en": "Hexagonal · six neighbours",

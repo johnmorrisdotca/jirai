@@ -10,7 +10,7 @@
 #notice{font-size:.85rem}#game{max-width:600px;margin:auto;--jr-ui-ink:var(--felt-ink);--jr-ui-surface:rgba(0,0,0,.28);--jr-ui-line:rgba(255,255,255,.35)}
 .panel-heading{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:12px}.panel-heading h2{font-size:1.05rem;margin:0}.panel-heading>span{font-size:.8rem;opacity:.8}.board-note{display:flex;justify-content:space-between;gap:12px;font-size:.75rem;margin-top:16px;opacity:.8}
 .rules{margin-top:24px;padding-top:18px;border-top:1px solid var(--rule)}.rules h2{font-size:1.05rem}.rules ol{padding-left:22px}.rules li{font-size:.9rem;line-height:1.5;margin:8px 0;max-width:70ch}.rules .eyebrow{display:none}
-.twists{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.twists h3{font-size:1rem}.twists p{font-size:.85rem;color:var(--muted);line-height:1.5}
+.twists{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}.twists h3{font-size:1rem}.twists p{font-size:.85rem;color:var(--muted);line-height:1.5}
 @media(max-width:700px){.table{grid-template-columns:1fr}.twists{grid-template-columns:1fr}#settings{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}#settings h2,.dimensions,.check,.pair,.primary,.actions,#notice{grid-column:1/-1}.play-panel{padding:14px 10px}.panel-heading{flex-wrap:wrap}}
 
 #settings{padding:16px;border:1px solid var(--rule);border-radius:16px;background:var(--surface)}

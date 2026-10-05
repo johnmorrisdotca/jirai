@@ -28,3 +28,13 @@ for (const grid of ["hex","wrap"]) test(`${grid} boards and saving a run`, async
   await expect(page.locator(".jr-root")).toHaveAttribute("data-grid", grid);
   await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open");
 });
+test("orthogonal rules have their own selection and saved-code version", async ({ page }) => {
+  await page.goto("/?grid=orthogonal&seed=19&noGuess=0");
+  await expect(page.locator(".jr-root")).toHaveAttribute("data-grid", "orthogonal");
+  await expect(page.locator('[name="grid"] option[value="orthogonal"]')).toHaveCount(1);
+  await page.locator('[data-cell="40"]').click();
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open");
+  await page.goto("/");
+  await expect(page.locator(".jr-root")).toHaveAttribute("data-grid", "orthogonal");
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open");
+});

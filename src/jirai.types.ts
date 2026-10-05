@@ -1,5 +1,5 @@
 /** A cell's number is its row-major place on the board, starting at zero. */
-export type Grid = "square" | "hex" | "wrap";
+export type Grid = "square" | "orthogonal" | "hex" | "wrap";
 export type Status = "ready" | "playing" | "won" | "lost";
 export type Mark = "covered" | "flag" | "question" | "open";
 export type Settings = {

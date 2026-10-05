@@ -1,12 +1,12 @@
 # Jirai 地雷
 
-**Every number is a clue.** Minesweeper on a square grid, a hexagonal grid, or a board whose opposite edges join. Clear the ground, mark the mines, and finish a field made from a seed.
+**Every number is a clue.** Minesweeper on four-neighbour orthogonal and eight-neighbour square grids, hexagons, or a board whose opposite edges join. Clear the ground, mark the mines, and finish a field made from a seed.
 
 Plain TypeScript rules, no runtime dependencies. The rules work without a browser; the playable board works in any page. A React wrapper and a custom element are separate imports.
 
 ## What it does
 
-- Square, hexagonal and wraparound boards, with width, height and mine count of your own.
+- Orthogonal four-neighbour, square eight-neighbour, hexagonal and wraparound boards, with width, height and mine count of your own.
 - Rectangle, heart, star and hexagon outlines; wide and tall presets. Cut-outs are outside the playable field.
 - A safe first cell, or a clear opening with all its neighbours safe.
 - Verified no-guess fields. A bounded generator throws `GenerationError` if it cannot prove a board; it never substitutes an ordinary field.
@@ -39,9 +39,11 @@ Every move returns a new game and leaves its input untouched. A move which is un
 
 `Settings.shape` may be `rectangle` (the default), `heart`, `star` or `hexagon`. Shaped fields require at least 9 cells on each side and work on square or hexagonal grids; wraparound requires a rectangle. `activeCells(settings)` returns playable row-major cells and `activeCell(settings, cell)` tests membership. Outside cells have clue −2, never contain mines and are excluded from neighbours, solving, drawing and winning. Mine count must be less than the playable cell count.
 
+The dedicated `@johnmorrisdotca/jirai/orthogonal` entry provides `newOrthogonalGame`, `makeOrthogonalBoard`, `orthogonalNeighbours`, `orthogonalHint`, `encodeOrthogonalGame` and `decodeOrthogonalGame`. It applies four-neighbour rules explicitly, so callers do not need to thread a topology string through setup.
+
 The demo uses the family’s original shared stylesheet and header template, with its five table-cloth choices and bilingual Help controls.
 
-Cells are row-major numbers, zero first: `cell = row * width + column`. Hex boards use axial coordinates: neighbours are left, right, above, above-right, below-left and below. A wrap board joins both opposite edges of a square grid.
+Cells are row-major numbers, zero first: `cell = row * width + column`. Orthogonal clues count only the four edge-sharing cells. Square boards count eight neighbours. Hex boards use axial coordinates: neighbours are left, right, above, above-right, below-left and below. A wrap board joins both opposite edges of a square grid.
 
 ```ts
 import { mountJirai } from "@johnmorrisdotca/jirai/play";
@@ -95,7 +97,7 @@ const restored = gameFromProgress(saved); // null for an invalid record
 const seed = dailySeed("2026-10-04", "hex");
 ```
 
-Records are versioned settings and legal moves, not unchecked mine arrays. A seed is only the start of a board's identity: width, height, mine count, grid, no-guess setting, opening policy and first cell matter too. Daily play uses UTC, beginner settings, and the centre opening. The demo's share link includes the first cell after a field has been dealt. Its local save restores the moves, but does not restore elapsed time.
+Ordinary grids keep version 1 progress records. Orthogonal records use version 2 and an explicit `variant: "orthogonal"` marker; `decodeOrthogonalGame` accepts only those records. Existing square, hex and wraparound records keep their format and meaning. A seed is only the start of a board's identity: width, height, mine count, grid, no-guess setting, opening policy and first cell matter too. Daily play uses UTC, beginner settings, and the centre opening. The demo's share link includes the first cell after a field has been dealt. Its local save restores the moves, but does not restore elapsed time.
 
 ## The no-guess promise
 
@@ -121,7 +123,7 @@ The generated standalone page is in `docs/`; the preview serves only on `127.0.0
 
 ## Architecture
 
-Rules: `jirai.types.ts`, `jirai.constants.ts`, `grid.ts`, `random.ts`, `generate.ts`, `flood.ts`, `game.ts`, `deduce.ts`, `enumerate.ts`, `keep.ts`.
+Rules: `jirai.types.ts`, `jirai.constants.ts`, `grid.ts`, `random.ts`, `generate.ts`, `flood.ts`, `game.ts`, `deduce.ts`, `enumerate.ts`, `keep.ts`, `orthogonal.ts`.
 
 Drawing and play: `draw.ts`, `style.ts`, `strings.ts`, `mount.ts`, `worker.ts`, `ui.types.ts`. Framework and tag wrappers are separate entries.
 

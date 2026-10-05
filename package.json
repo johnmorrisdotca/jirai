@@ -8,11 +8,12 @@
   "repository": { "type": "git", "url": "git+https://github.com/johnmorrisdotca/jirai.git" },
   "homepage": "https://johnmorrisdotca.github.io/jirai/",
   "bugs": { "url": "https://github.com/johnmorrisdotca/jirai/issues" },
-  "keywords": ["minesweeper", "puzzle", "hexagonal", "no-guess", "typescript", "seeded", "web-component", "itsutsu"],
+  "keywords": ["minesweeper", "puzzle", "hexagonal", "orthogonal", "no-guess", "typescript", "seeded", "web-component", "itsutsu"],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./orthogonal": { "types": "./dist/orthogonal.d.ts", "default": "./dist/orthogonal.js" },
     "./play": { "types": "./dist/play-entry.d.ts", "default": "./dist/play-entry.js" },
     "./draw": { "types": "./dist/draw-entry.d.ts", "default": "./dist/draw-entry.js" },
     "./element": { "types": "./dist/element.d.ts", "default": "./dist/element.js" },

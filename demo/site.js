@@ -21,7 +21,7 @@ catch { table = mountJirai(document.querySelector("#game"), { ...options, settin
 const restored = table.game().settings;
 for (const name of ["width","height","mines","seed","grid","shape","opening"]) form.elements[name].value = restored[name] ?? "rectangle";
 form.elements.noGuess.checked = restored.noGuess;
-function heading() { document.querySelector("#board-title").textContent = (language === "ja" ? { square: "正方形の盤", hex: "六角形の盤", wrap: "つながる盤" } : { square: "Square field", hex: "Hexagonal field", wrap: "Wraparound field" })[table.game().settings.grid]; }
+function heading() { document.querySelector("#board-title").textContent = (language === "ja" ? { square: "正方形の盤", orthogonal: "直交の盤", hex: "六角形の盤", wrap: "つながる盤" } : { square: "Square field", orthogonal: "Orthogonal field", hex: "Hexagonal field", wrap: "Wraparound field" })[table.game().settings.grid]; }
 heading();
 function begin() { notice.textContent = ""; try { table.load(read()); table.set(appearance()); heading(); } catch (error) { notice.textContent = error.message; } }
 form.addEventListener("submit", (event) => { event.preventDefault(); begin(); });
@@ -58,7 +58,7 @@ translate();
 
 const pageWords = Object.fromEntries(["en", "ja"].map(lang => [lang, {
   ...Object.fromEntries(Object.entries(PAGE_WORDS).map(([key, value]) => [key, value[lang]])),
-  pitch: lang === "ja" ? "正方形、六角形、端がつながる盤の地雷パズル。盤の大きさ、地雷の数、素材と印を選び、数字を手がかりに安全なマスを開けましょう。" : "Minesweeper on squares, hexagons and a board whose edges join. Choose the size, mine count, material and markers; read the numbers and open every safe cell.",
+  pitch: lang === "ja" ? "四近傍の直交盤、正方形、六角形、端がつながる盤の地雷パズル。盤の大きさ、地雷の数、素材と印を選び、数字を手がかりに安全なマスを開けましょう。" : "Minesweeper on orthogonal four-neighbour grids, squares, hexagons and a board whose edges join. Choose the size, mine count, material and markers; read the numbers and open every safe cell.",
   name: lang === "ja" ? "Jirai（地雷）は、地面に埋められた爆弾のこと。" : "Jirai (地雷) is Japanese for a land mine.",
   foot: lang === "ja" ? "数字を手がかりに、地雷を避けます。" : "Read the clues and leave the mines alone.",
 }]));

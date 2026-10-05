@@ -2,10 +2,12 @@ import { describe, expect, it } from "vitest";
 import { newGame, play, visibleGame } from "./game.ts";
 import { makeBoard, isSolvable, GenerationError } from "./generate.ts";
 import { DEFAULT_SETTINGS, GRIDS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
-import { neighbours, neighboursOf, validSettings } from "./grid.ts";
+import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
 import { gameFromProgress, gameProgress, dailySeed } from "./keep.ts";
 import { boardModel } from "./draw.ts";
+import { hintFor } from "./deduce.ts";
 import type { Board, Game, Settings } from "./jirai.types.ts";
+import { decodeOrthogonalGame, encodeOrthogonalGame, makeOrthogonalBoard, newOrthogonalGame, orthogonalHint, orthogonalNeighbours } from "./orthogonal.ts";
 
 function fixedGame(minesAt: number[]): Game {
   const settings: Settings = { ...DEFAULT_SETTINGS, width: 5, height: 5, mines: minesAt.length, noGuess: false, opening: "safe" };
@@ -15,7 +17,7 @@ function fixedGame(minesAt: number[]): Game {
   return { ...newGame(settings), board };
 }
 
-describe("the three boards", () => {
+describe("the grid topologies", () => {
   for (const grid of Object.values(GRIDS)) it(`${grid} has reciprocal, unique neighbours and no self-neighbours`, () => {
     const settings = { ...DEFAULT_SETTINGS, width: 7, height: 5, grid };
     const all = neighboursOf(settings);
@@ -25,10 +27,31 @@ describe("the three boards", () => {
       for (const n of all[cell]!) expect(all[n]).toContain(cell);
     }
   });
-  it("uses six hex neighbours, eight square neighbours, and joins both wrap seams", () => {
+  it("uses four orthogonal neighbours, six hex neighbours, eight square neighbours, and joins both wrap seams", () => {
+    expect(neighbours({ ...DEFAULT_SETTINGS, grid: GRIDS.orthogonal }, 40)).toHaveLength(4);
     expect(neighbours({ ...DEFAULT_SETTINGS, grid: GRIDS.hex }, 40)).toHaveLength(6);
     expect(neighbours(DEFAULT_SETTINGS, 40)).toHaveLength(8);
     expect(neighbours({ ...DEFAULT_SETTINGS, grid: GRIDS.wrap }, 0)).toEqual([1,8,9,10,17,72,73,80]);
+  });
+  it("uses only orthogonal clues, preserves playable voids, and verifies a no-guess deal", () => {
+    const settings = { ...DEFAULT_SETTINGS, width: 9, height: 9, mines: 10, grid: GRIDS.orthogonal, seed: 19 };
+    const board = makeBoard(settings, 40);
+    expect(board.clues[40]).toBe(0);
+    for (let cell = 0; cell < 81; cell += 1) {
+      expect(board.clues[cell]).toBe(board.mines[cell] ? -1 : neighbours(settings, cell).filter(next => board.mines[next]).length);
+    }
+    expect(isSolvable(board)).toBe(true);
+    const shaped = { ...settings, shape: "heart" as const };
+    const shapedBoard = makeBoard(shaped, 40);
+    for (let cell = 0; cell < 81; cell += 1) if (!validCell(shaped, cell)) {
+      expect(shapedBoard.mines[cell]).toBe(false);
+      expect(shapedBoard.clues[cell]).toBe(-2);
+      expect(neighbours(shaped, cell)).toEqual([]);
+    }
+    const playing = play(newGame(settings), { kind: MOVES.reveal, cell: 40 });
+    const proof = hintFor(visibleGame(playing));
+    expect(proof.safe.every(cell => !playing.board!.mines[cell])).toBe(true);
+    expect(proof.mines.every(cell => playing.board!.mines[cell])).toBe(true);
   });
   it("rejects malformed or excessive settings before making a board", () => {
     for (const change of [{ width: 1 }, { width: 61 }, { width: 60, height: 60 }, { mines: 81 }, { seed: NaN }, { grid: "__proto__" }, { mines: 1.5 }, { noGuess: "yes" }]) expect(validSettings({ ...DEFAULT_SETTINGS, ...change })).toBe(false);
@@ -113,8 +136,28 @@ describe("moves", () => {
     expect(gameFromProgress(gameProgress(game))).toEqual(game);
     for (const data of ["garbage", "null", '{"version":2}', JSON.stringify({ version: 1, settings: DEFAULT_SETTINGS, moves: [{ kind: "reveal", cell: -1 }] })]) expect(gameFromProgress(data)).toBeNull();
   });
+  it("keeps orthogonal save records distinct and preserves legacy square codes", () => {
+    const legacy = JSON.stringify({ version: 1, settings: DEFAULT_SETTINGS, moves: [], helped: false });
+    expect(gameFromProgress(legacy)).toEqual(newGame());
+    const orthogonal = newGame({ ...DEFAULT_SETTINGS, grid: GRIDS.orthogonal });
+    const code = gameProgress(orthogonal);
+    expect(JSON.parse(code)).toMatchObject({ version: 2, variant: "orthogonal", settings: { grid: "orthogonal" } });
+    expect(gameFromProgress(code)).toEqual(orthogonal);
+    expect(gameFromProgress(JSON.stringify({ ...JSON.parse(code), variant: "square" }))).toBeNull();
+  });
+  it("exposes focused orthogonal helpers and variant-only progress codes", () => {
+    const settings = { ...DEFAULT_SETTINGS, width: 9, height: 9, mines: 10, seed: 4 };
+    const game = newOrthogonalGame(settings);
+    expect(game.settings.grid).toBe("orthogonal");
+    expect(orthogonalNeighbours(settings, 40)).toHaveLength(4);
+    expect(makeOrthogonalBoard(settings, 40).settings.grid).toBe("orthogonal");
+    expect(orthogonalHint(play(game, { kind: MOVES.reveal, cell: 40 })).contradiction).toBe(false);
+    expect(decodeOrthogonalGame(encodeOrthogonalGame(game))).toEqual(game);
+    expect(decodeOrthogonalGame(gameProgress(newGame()))).toBeNull();
+  });
   it("has stable daily seeds and rejects impossible calendar dates", () => {
     expect(dailySeed("2026-10-04")).toBe(dailySeed("2026-10-04"));
+    expect(dailySeed("2026-10-04", "orthogonal")).not.toBe(dailySeed("2026-10-04"));
     expect(dailySeed("2026-10-04", "hex")).not.toBe(dailySeed("2026-10-04"));
     expect(() => dailySeed("2026-02-30")).toThrow();
   });

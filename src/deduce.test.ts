@@ -25,8 +25,8 @@ it("enumeration proves only cells forced in every consistent assignment", () => 
   expect(enumerateForced([{ cells: [0], mines: 2, sources: [] }]).contradiction).toBe(true);
 });
 
-it("agrees with an independent exhaustive oracle on square, hex and wrapped 3×3 positions", () => {
-  for (const grid of ["square", "hex", "wrap"] as Grid[]) {
+it("agrees with an independent exhaustive oracle on square, orthogonal, hex and wrapped 3×3 positions", () => {
+  for (const grid of ["square", "orthogonal", "hex", "wrap"] as Grid[]) {
     const settings = { ...DEFAULT_SETTINGS, width: 3, height: 3, mines: 2, grid };
     for (let firstMine = 0; firstMine < 9; firstMine += 1) for (let secondMine = firstMine + 1; secondMine < 9; secondMine += 1) {
       const actual = [firstMine, secondMine];

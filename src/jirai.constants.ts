@@ -1,12 +1,13 @@
 import type { Grid, Settings } from "./jirai.types.ts";
 
-export const GRIDS = { square: "square", hex: "hex", wrap: "wrap" } as const;
+export const GRIDS = { square: "square", orthogonal: "orthogonal", hex: "hex", wrap: "wrap" } as const;
 export const STATUSES = { ready: "ready", playing: "playing", won: "won", lost: "lost" } as const;
 export const MARKS = { covered: "covered", flag: "flag", question: "question", open: "open" } as const;
 export const MOVES = { reveal: "reveal", mark: "mark", chord: "chord" } as const;
 /** Hex coordinates are axial: a row is displaced half a cell to the right. */
 export const GRID_SPECS: Record<Grid, { offsets: readonly (readonly [number, number])[]; wrap: boolean }> = {
   square: { offsets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], wrap: false },
+  orthogonal: { offsets: [[0,-1],[-1,0],[1,0],[0,1]], wrap: false },
   hex: { offsets: [[-1,0],[1,0],[0,-1],[1,-1],[-1,1],[0,1]], wrap: false },
   wrap: { offsets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], wrap: true },
 };

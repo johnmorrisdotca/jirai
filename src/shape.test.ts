@@ -9,7 +9,7 @@ import { gameFromProgress, gameProgress } from "./keep.ts";
 import type { Settings } from "./jirai.types.ts";
 
 describe("shaped minefields", () => {
-  for (const shape of ["heart", "star", "hexagon"] as const) for (const grid of [GRIDS.square, GRIDS.hex]) {
+  for (const shape of ["heart", "star", "hexagon"] as const) for (const grid of [GRIDS.square, GRIDS.orthogonal, GRIDS.hex]) {
     it(`${shape}/${grid} omits cells and retains reciprocal neighbours and proved deals`, () => {
       const settings: Settings = { ...DEFAULT_SETTINGS, width: 17, height: 17, mines: 12, shape, grid };
       for (const outside of [-1, 289, 1.5, NaN]) expect(activeCell(settings, outside)).toBe(false);
