@@ -1,12 +1,13 @@
+// On Windows npm is a .cmd file, which only a shell runs.
 import { execFileSync } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-const packed = JSON.parse(execFileSync("npm", ["pack", "--ignore-scripts", "--json"], { encoding: "utf8" }))[0];
+const packed = JSON.parse(execFileSync("npm", ["pack", "--ignore-scripts", "--json"], { encoding: "utf8", shell: process.platform === "win32" }))[0];
 const temp = await mkdtemp(join(tmpdir(), "jirai-package-"));
 try {
   await writeFile(join(temp,"package.json"), '{"type":"module","private":true}');
-  execFileSync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", resolve(packed.filename)], { cwd: temp, stdio: "pipe" });
+  execFileSync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", resolve(packed.filename)], { cwd: temp, stdio: "pipe", shell: process.platform === "win32" });
   const worker = packed.files.find((file) => file.path === "dist/worker.js");
   if (!worker) throw new Error("The worker must ship in the package.");
   const source = `import { newGame, play, DEFAULT_SETTINGS } from '@johnmorrisdotca/jirai';
