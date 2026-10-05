@@ -116,6 +116,18 @@ The optional React entry exports `JiraiBoard` from `@johnmorrisdotca/jirai/react
 
 `levelNamed(name)` returns the level a name means (`extra-hard` may also be written `extra hard`, `extra_hard` or `extraHard`) or `null`. `levelSettings(level, { grid, shape })` returns `{ width, height, mines }`: a rectangle gets the numbers above, and a heart, star or hexagon outline keeps the level's width and height and its share of mines over the cells that are left. `PRESETS` holds the four levels, the three old names, and `wide` (21×9, 24) and `tall` (9×21, 24).
 
+### Huge fields
+
+`hugeSettings(level, { grid, shape, size })` is the same four levels on a field of four times the area of the medium one: 32×32 (1,024 squares), or 48×24 or 24×48 (1,152; `HUGE_SIZES` lists them) with the level's own share of the mines, so a 32×32 has 126 mines at `easy`, 160 at `medium`, 211 at `hard` and 256 at `extra-hard`, and a heart, star or hexagon outline keeps the share over the squares it has left. They are the same fields as any other: seeded, a safe opening, and every one proved to need no guess, on all four rule sets and all four outlines (`src/huge.test.ts`, and the winning of 32×32 fields at easy and extra-hard by the explained hints alone).
+
+Measured on a Mac (20 cores, busy): dealing and proving a 32×32 takes a median of 3 ms at easy, 5 ms at medium, 11 ms at hard and 60 ms at extra-hard (the slowest of ten seeds 73 ms; 48×24 at extra-hard 54 ms median, 91 ms slowest); the orthogonal four-neighbour field, the hardest to finish, took 46 ms median and 87 ms slowest at 25%. The player deals in a worker, so the page is never held. A reveal or a flag on the 1,024-square board is answered in 4 ms of script on the desk and about 20 ms with the processor slowed fourfold, as a phone's is, and the next frame follows at once (36 ms with 2,400 squares, the most a field may have), so the board is plain buttons still and needs no canvas. The explained `hintFor` takes 8 ms on average and at most 43 ms late in a 32×32 extra-hard field (it was 51 and 400 before 0.4.0).
+
+```ts
+import { DEFAULT_SETTINGS, hugeSettings, newGame } from "@johnmorrisdotca/jirai";
+
+const game = newGame({ ...DEFAULT_SETTINGS, ...hugeSettings("hard"), seed: 7 }); // 32 × 32, 211 mines
+```
+
 ```ts
 import { DEFAULT_SETTINGS, levelSettings, newGame } from "@johnmorrisdotca/jirai";
 

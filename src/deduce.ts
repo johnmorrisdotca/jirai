@@ -6,8 +6,7 @@ import type { Constraint, Deduction, VisibleGame } from "./jirai.types.ts";
  * What the clues prove, without reading the answer or trusting a player's
  * flags. A flag is a note; treating it as evidence makes a bad note a bad hint.
  */
-export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new Set(), enumerate = true): Deduction {
-  const adjacent = neighboursOf(game.settings);
+export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new Set(), enumerate = true, adjacent: readonly (readonly number[])[] = neighboursOf(game.settings)): Deduction {
   const constraints: Constraint[] = [];
   const empty: Deduction = { safe: [], mines: [], reason: "none", sources: [], contradiction: false };
   for (let cell = 0; cell < game.clues.length; cell += 1) {
@@ -31,19 +30,26 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
   if (unknown.length) { const result = forced(total, "total"); if (result !== null) return result; }
   // Compare a smaller clue with a larger one, including the mine counter.
   // Their difference is another exact count. Never subtract mere overlaps.
-  const sets = [...constraints, total].map((c) => new Set(c.cells));
   const all = [...constraints, total];
-  for (let i = 0; i < all.length; i += 1) for (let j = 0; j < all.length; j += 1) {
-    if (i === j || all[i]!.cells.length >= all[j]!.cells.length) continue;
-    if (!all[i]!.cells.every((cell) => sets[j]!.has(cell))) continue;
-    const c: Constraint = {
-      cells: all[j]!.cells.filter((cell) => !sets[i]!.has(cell)),
-      mines: all[j]!.mines - all[i]!.mines,
-      sources: [...new Set([...all[i]!.sources, ...all[j]!.sources])],
-    };
-    if (c.mines < 0 || c.mines > c.cells.length) return { ...empty, contradiction: true };
-    const result = forced(c, j === all.length - 1 ? "total" : "overlap");
-    if (result !== null) return result;
+  const sets = all.map((c) => new Set(c.cells));
+  // A constraint can only be inside another that holds its first cell, so each is compared with those alone, in the same order as
+  // comparing it with every other. On a large field that is a handful of neighbours instead of every clue on the board.
+  const holding = new Map<number, number[]>();
+  all.forEach((c, index) => { for (const cell of c.cells) { const list = holding.get(cell); if (list === undefined) holding.set(cell, [index]); else list.push(index); } });
+  for (let i = 0; i < all.length; i += 1) {
+    const inside = all[i]!.cells.length === 0 ? all.map((_, index) => index) : holding.get(all[i]!.cells[0]!)!;
+    for (const j of inside) {
+      if (i === j || all[i]!.cells.length >= all[j]!.cells.length) continue;
+      if (!all[i]!.cells.every((cell) => sets[j]!.has(cell))) continue;
+      const c: Constraint = {
+        cells: all[j]!.cells.filter((cell) => !sets[i]!.has(cell)),
+        mines: all[j]!.mines - all[i]!.mines,
+        sources: [...new Set([...all[i]!.sources, ...all[j]!.sources])],
+      };
+      if (c.mines < 0 || c.mines > c.cells.length) return { ...empty, contradiction: true };
+      const result = forced(c, j === all.length - 1 ? "total" : "overlap");
+      if (result !== null) return result;
+    }
   }
   // A whole-board constraint would join otherwise independent components.
   // Local enumeration is conservative; the global counter is used above.
@@ -53,9 +59,10 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
 /** Keep discovering certain mines until there is a safe cell or nothing more is proved. */
 export function hintFor(game: VisibleGame): Deduction {
   const known = new Set<number>();
+  const adjacent = neighboursOf(game.settings);
   let last: Deduction = { safe: [], mines: [], reason: "none", sources: [], contradiction: false };
   while (known.size <= game.settings.mines) {
-    const result = deduce(game, known);
+    const result = deduce(game, known, true, adjacent);
     if (result.contradiction || result.safe.length) return result;
     const fresh = result.mines.filter((cell) => !known.has(cell));
     if (!fresh.length) return last;

@@ -222,5 +222,7 @@ Object.assign(PAGE_WORDS, {
   shapeHeart: { en: "Heart", ja: "ハート" }, shapeStar: { en: "Star", ja: "星" }, shapeHexagon: { en: "Hexagon outline", ja: "六角形の輪郭" },
   levelEasy: { en: "Easy · 9 × 9 / 10 mines", ja: "初級 · 9 × 9 / 地雷10" }, levelMedium: { en: "Medium · 16 × 16 / 40 mines", ja: "中級 · 16 × 16 / 地雷40" },
   levelHard: { en: "Hard · 30 × 16 / 99 mines", ja: "上級 · 30 × 16 / 地雷99" }, levelExtraHard: { en: "Extra-hard · 40 × 24 / 240 mines", ja: "超上級 · 40 × 24 / 地雷240" },
+  hugeEasy: { en: "Huge easy · 32 × 32 / 126 mines", ja: "巨大初級 · 32 × 32 / 地雷126" }, hugeMedium: { en: "Huge medium · 32 × 32 / 160 mines", ja: "巨大中級 · 32 × 32 / 地雷160" },
+  hugeHard: { en: "Huge hard · 32 × 32 / 211 mines", ja: "巨大上級 · 32 × 32 / 地雷211" }, hugeExtraHard: { en: "Huge extra-hard · 32 × 32 / 256 mines", ja: "巨大超上級 · 32 × 32 / 地雷256" },
   sizeWide: { en: "Wide · 21 × 9 / 24 mines", ja: "横長 · 21 × 9 / 地雷24" }, sizeTall: { en: "Tall · 9 × 21 / 24 mines", ja: "縦長 · 9 × 21 / 地雷24" },
 });

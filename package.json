@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/jirai",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Minesweeper on square, orthogonal, hexagonal and wraparound boards: four levels up to extra-hard, seeded games, a safe opening, verified no-guess boards, explained hints, configurable materials and markers, and a playable board for any page. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",

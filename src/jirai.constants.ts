@@ -26,6 +26,12 @@ export const LEVEL_SIZES: Record<(typeof LEVELS)[number], { width: number; heigh
   hard: { width: 30, height: 16, mines: 99 },
   "extra-hard": { width: 40, height: 24, mines: 240 },
 };
+/**
+ * The huge fields: four times the area of a 16×16 (the medium level), 1,024 to 1,152 squares, for a long solve. The same
+ * share of mines as a level, see `hugeSettings`. They are dealt, proved and drawn like any other field: a no-guess deal takes
+ * a few milliseconds to a tenth of a second here, and 2,400 squares is the most `validSettings` accepts.
+ */
+export const HUGE_SIZES = [{ width: 32, height: 32 }, { width: 48, height: 24 }, { width: 24, height: 48 }] as const satisfies readonly { width: number; height: number }[];
 /** Common minefield dimensions and mine counts. The levels, their older names, and two shapes of field. */
 export const PRESETS = {
   ...LEVEL_SIZES,

@@ -1,11 +1,14 @@
-import { DEFAULT_SETTINGS, PRESETS, dailySeed, gameProgress, activeCells, levelNamed, levelSettings } from "./dist/index.js";
+import { DEFAULT_SETTINGS, PRESETS, dailySeed, gameProgress, activeCells, hugeSettings, levelNamed, levelSettings } from "./dist/index.js";
+// A level, or a huge field of one (`huge-easy`, `huge-extra-hard` …): its name and whether it is the huge size.
+const levelOf = (value) => { const huge = typeof value === "string" && value.toLowerCase().startsWith("huge-"); const level = levelNamed(huge ? value.slice(5) : value); return level === null ? null : { level, huge }; };
+const sizeOfLevel = (value, board) => { const { level, huge } = levelOf(value); return (huge ? hugeSettings : levelSettings)(level, board); };
 import { mountJirai } from "./dist/play-entry.js";
 import { PAGE_WORDS } from "./words.js";
 const form = document.querySelector("#settings");
 const notice = document.querySelector("#notice");
 const params = new URLSearchParams(location.search);
 // A level (or one of its older names: beginner, intermediate, expert) sets the size first; an explicit width, height or mines still wins.
-if (levelNamed(params.get("level"))) { form.elements.preset.value = levelNamed(params.get("level")); for (const name of ["grid","shape"]) if (params.has(name)) form.elements[name].value = params.get(name); applyLevel(); }
+if (levelOf(params.get("level"))) { form.elements.preset.value = params.get("level").toLowerCase().startsWith("huge-") ? "huge-" + levelOf(params.get("level")).level : levelOf(params.get("level")).level; for (const name of ["grid","shape"]) if (params.has(name)) form.elements[name].value = params.get(name); applyLevel(); }
 for (const name of ["width","height","mines","seed","grid","shape","opening","material","pieces"]) if (params.has(name)) form.elements[name].value = params.get(name);
 if (params.has("noGuess")) form.elements.noGuess.checked = params.get("noGuess") === "1";
 let language = params.get("language") === "ja" ? "ja" : "en";
@@ -29,7 +32,7 @@ heading();
 function begin() { notice.textContent = ""; try { table.load(read()); table.set(appearance()); heading(); } catch (error) { notice.textContent = error.message; } }
 form.addEventListener("submit", (event) => { event.preventDefault(); begin(); });
 form.elements.preset.addEventListener("change", () => {
-  if (levelNamed(form.elements.preset.value)) { shapeLimits(); applyLevel(); return; }
+  if (levelOf(form.elements.preset.value)) { shapeLimits(); applyLevel(); return; }
   const preset = PRESETS[form.elements.preset.value];
   if (preset) { form.elements.shape.value = "rectangle"; shapeLimits(); for (const name of ["width","height","mines"]) form.elements[name].value = preset[name]; }
 });
@@ -84,22 +87,21 @@ function shapeLimits() {
   form.elements.width.min = form.elements.height.min = shaped ? "9" : "3";
 }
 function applyLevel() {
-  const level = levelNamed(form.elements.preset.value);
-  if (level === null) return;
-  const size = levelSettings(level, { grid: form.elements.grid.value, shape: form.elements.shape.value });
+  if (levelOf(form.elements.preset.value) === null) return;
+  const size = sizeOfLevel(form.elements.preset.value, { grid: form.elements.grid.value, shape: form.elements.shape.value });
   for (const name of ["width","height","mines"]) form.elements[name].value = size[name];
 }
 // Show which level the numbers in the form make, or Choose your own when they make none.
 function syncPreset() {
   const now = ["width","height","mines"].map(name => Number(form.elements[name].value)).join("x");
   const grid = form.elements.grid.value, shape = form.elements.shape.value;
-  const level = ["easy","medium","hard","extra-hard"].find(name => { const size = levelSettings(name, { grid, shape }); return `${size.width}x${size.height}x${size.mines}` === now; });
+  const level = ["easy","medium","hard","extra-hard","huge-easy","huge-medium","huge-hard","huge-extra-hard"].find(name => { const size = sizeOfLevel(name, { grid, shape }); return `${size.width}x${size.height}x${size.mines}` === now; });
   const preset = shape === "rectangle" ? ["wide","tall"].find(name => ["width","height","mines"].map(key => PRESETS[name][key]).join("x") === now) : undefined;
   form.elements.preset.value = level ?? preset ?? "custom";
 }
 form.elements.shape.addEventListener("change", () => {
   shapeLimits();
-  if (levelNamed(form.elements.preset.value)) { applyLevel(); return; }
+  if (levelOf(form.elements.preset.value)) { applyLevel(); return; }
   if (form.elements.shape.value !== "rectangle") {
     form.elements.width.value = Math.max(17, Number(form.elements.width.value));
     form.elements.height.value = Math.max(17, Number(form.elements.height.value));
@@ -108,5 +110,5 @@ form.elements.shape.addEventListener("change", () => {
   }
 });
 // The hexagon outline is a different cut-out under hexagonal rules, so a level's mine count follows the grid too.
-form.elements.grid.addEventListener("change", () => { if (levelNamed(form.elements.preset.value) && form.elements.shape.value !== "rectangle") applyLevel(); });
+form.elements.grid.addEventListener("change", () => { if (levelOf(form.elements.preset.value) && form.elements.shape.value !== "rectangle") applyLevel(); });
 shapeLimits();

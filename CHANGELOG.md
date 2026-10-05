@@ -6,6 +6,12 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-05
+
+- **Huge fields.** `hugeSettings(level, { grid, shape, size })` and `HUGE_SIZES` (32×32, 48×24 and 24×48) give each of the four levels on a field of four times the medium level's area, 1,024 to 1,152 squares, with the level's share of mines (a 32×32 has 126, 160, 211 and 256 mines at easy, medium, hard and extra-hard), on every rule set and outline. Every one is dealt and proved to need no guess in a median of 3 to 60 ms (73 ms the slowest of ten 32×32 seeds), on the square, orthogonal, hexagonal and wraparound grids and the heart, star and hexagon outlines, and `src/huge.test.ts` wins a 32×32 at easy and at extra-hard by the explained hints alone. The demo's Level menu offers them (`?level=huge-hard`).
+- **A faster hint.** `deduce` compares a count only with the counts that hold its first square, and `hintFor` builds the neighbours once instead of at every step: on a 32×32 extra-hard field the explained hint took 51 ms on average and up to 400 ms late in the game, now 8 ms and at most 43 ms. The hints it finds are the same ones.
+- Measured, not changed: a reveal or a flag on a 1,024-square board is 4 ms of script, 20 ms with the processor slowed fourfold, and the next frame follows (2,400 squares, the most settings accept: 36 ms), so the board stays plain buttons; the README has the numbers.
+
 ## [0.3.0] - 2026-10-05
 
 - An extra-hard level, 40×24 with 240 mines (25%), joins easy, medium and hard on every rule and outline, and every field is still proved to need no guess. `beginner`, `intermediate` and `expert` stay as names for easy, medium and hard, and `PRESETS` keeps them. New: `LEVELS`, `LEVEL_SIZES`, `LEVEL_ALIASES`, `levelNamed`, `levelSettings` (shaped boards keep a level's size and share of mines) and `measureBoard`, which scores density, multi-step share and depth of deduction so the levels can be shown to step up.
