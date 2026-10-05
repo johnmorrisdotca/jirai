@@ -1,0 +1,30 @@
+import { expect, test } from "@playwright/test";
+test("a verified field, notes, hints, appearance and just-board mode", async ({ page }) => {
+  const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("/?seed=7");
+  await page.locator('[data-cell="40"]').click();
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open", { timeout: 20_000 });
+  await expect(page.locator(".jr-board")).toHaveAttribute("aria-busy", "false");
+  await page.locator('[name="material"]').selectOption("slate");
+  await expect(page.locator(".jr-root")).toHaveAttribute("data-material", "slate");
+  await page.getByRole("button", { name: "Just the board", exact: true }).click();
+  await expect(page.locator("dialog")).toBeVisible();
+  await page.keyboard.press("Escape"); await expect(page.locator("dialog")).not.toBeVisible();
+  await page.getByRole("button", { name: "Start over", exact: true }).click();
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "covered");
+  await page.locator('[data-cell="0"]').focus(); await page.keyboard.press("f");
+  await expect(page.locator('[data-cell="0"]')).toHaveAttribute("data-kind", "flag");
+  await page.keyboard.press("ArrowRight"); await page.keyboard.press("Enter");
+  await expect(page.locator('[data-cell="1"]')).toHaveAttribute("data-kind", "open");
+  await page.screenshot({ path: `../jirai-${test.info().project.name}.png`, fullPage: true });
+  expect(errors).toEqual([]);
+});
+for (const grid of ["hex","wrap"]) test(`${grid} boards and saving a run`, async ({ page }) => {
+  await page.goto(`/?grid=${grid}&seed=19`);
+  await page.locator('[data-cell="40"]').click();
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open", { timeout: 20_000 });
+  await expect(page.locator(".jr-root")).toHaveAttribute("data-grid", grid);
+  await page.goto("/");
+  await expect(page.locator(".jr-root")).toHaveAttribute("data-grid", grid);
+  await expect(page.locator('[data-cell="40"]')).toHaveAttribute("data-kind", "open");
+});

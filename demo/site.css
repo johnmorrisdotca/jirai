@@ -1,0 +1,16 @@
+/* Jirai's own layout, after the unchanged family.css. */
+:root{--intro-room:8rem;--intro-room-wide:5rem}
+.table{display:grid;grid-template-columns:260px minmax(0,1fr);gap:24px;align-items:start}
+#settings h2{font-size:1.05rem;margin:0 0 12px}#settings h2>span:last-child{color:var(--muted);font-weight:500;font-size:.8rem}
+#settings label{display:flex;flex-direction:column;align-items:stretch;gap:6px;font-size:.85rem;margin-bottom:12px;color:var(--muted)}
+#settings input:not([type=checkbox]),#settings select{width:100%;min-width:0}
+.dimensions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#settings .check{flex-direction:row;align-items:flex-start;gap:8px}.check input{width:18px;height:18px;accent-color:var(--good)}.check small{display:block;font-size:.75rem;margin-top:4px}
+.primary{width:100%;justify-content:space-between}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.actions button{font-size:.8rem;min-height:44px;border:1px solid var(--rule);border-radius:999px;padding:0 12px;background:var(--surface)}
+#notice{font-size:.85rem}#game{max-width:600px;margin:auto;--jr-ui-ink:var(--felt-ink);--jr-ui-surface:rgba(0,0,0,.28);--jr-ui-line:rgba(255,255,255,.35)}
+.panel-heading{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:12px}.panel-heading h2{font-size:1.05rem;margin:0}.panel-heading>span{font-size:.8rem;opacity:.8}.board-note{display:flex;justify-content:space-between;gap:12px;font-size:.75rem;margin-top:16px;opacity:.8}
+.rules{margin-top:24px;padding-top:18px;border-top:1px solid var(--rule)}.rules h2{font-size:1.05rem}.rules ol{padding-left:22px}.rules li{font-size:.9rem;line-height:1.5;margin:8px 0;max-width:70ch}.rules .eyebrow{display:none}
+.twists{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.twists h3{font-size:1rem}.twists p{font-size:.85rem;color:var(--muted);line-height:1.5}
+@media(max-width:700px){.table{grid-template-columns:1fr}.twists{grid-template-columns:1fr}#settings{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}#settings h2,.dimensions,.check,.pair,.primary,.actions,#notice{grid-column:1/-1}.play-panel{padding:14px 10px}.panel-heading{flex-wrap:wrap}}
+
+#settings{padding:16px;border:1px solid var(--rule);border-radius:16px;background:var(--surface)}
