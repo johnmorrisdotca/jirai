@@ -44,7 +44,13 @@ const game = newOrthogonalGame(settings);
 const board = makeOrthogonalBoard(settings, 40); // counts only edge-sharing neighbours
 ```
 
-## What it does
+## Who it is for
+
+- **Puzzle and game sites** that want Minesweeper with boards a player can trust: seeded fields that deal the same everywhere, a safe opening, verified no-guess deals, and the words in English and Japanese.
+- **Developers of other front ends** who want the rules, the dealer and the deduction solver as plain functions, with no DOM, and their own drawing on top.
+- **Players and teachers** who want to learn why a cell is safe: the hints explain the deduction that proves it, and a level steps up a measured difficulty.
+
+## Features
 
 - **Four rule sets:** square grids count eight neighbours, orthogonal grids count four, hex grids count six axial neighbours, and wraparound grids join opposite square edges.
 - **Board outlines:** rectangles, hearts, stars and hexagon outlines. Shaped boards have cut-outs; wraparound works with rectangles.
@@ -56,7 +62,7 @@ const board = makeOrthogonalBoard(settings, 40); // counts only edge-sharing nei
 - **Accessible controls:** keyboard navigation, pointer and touch, long press to mark, English and Japanese strings, and board labels read by assistive technology.
 - **Materials and markers:** ivory, wood or slate; flags, stones or flowers. Host CSS can replace the palette.
 
-## Use it in a page
+## Use it in your project
 
 Mount a player into any element. The first reveal asks the module worker to deal the board, so serve the package over HTTP and allow same-origin module workers in your content security policy.
 
@@ -153,13 +159,17 @@ Orthogonal clues carry less information, so its numbers are smaller at every lev
 
 The full engine entry is `@johnmorrisdotca/jirai`; four-neighbour helpers are in `@johnmorrisdotca/jirai/orthogonal`. Drawing is `@johnmorrisdotca/jirai/draw`, browser play is `/play`, and the custom element is `/element` or `/element/define`. The [API guide](docs/API.md) lists the entries and public calls.
 
-## Drawing and theming
+## API
+
+Every export of every entry point is in the [API reference](https://johnmorrisdotca.github.io/jirai/api.html), made from the source when the demo is built, and the [API guide](docs/API.md) lists the entries and public calls in prose.
+
+## Theming
 
 `boardModel(game, options)` returns row-major labelled cells without touching the DOM. The draw entry exports `JIRAI_STYLE` and the board model. The player uses the same theme variables as its SVG and HTML controls; set `material`, `pieces`, and `language` on mount or override the CSS custom properties in your host.
 
 Materials are `ivory`, `wood` and `slate`. Marker sets are `flags`, `stones` and `flowers`. They change appearance only; the engine still stores covered, flag, question or open states.
 
-## Limits and browser support
+## Limits
 
 The board is capped at 60 cells per side and 2,400 cells overall. Shapes need at least 9×9; wraparound is rectangular.
 
@@ -182,7 +192,52 @@ The board is capped at 60 cells per side and 2,400 cells overall. Shapes need at
 
 For synchronous server use, consider running a deal in a worker; a browser deals extra-hard in the board's own worker without a pause.
 
+## Browser support
+
 The browser player uses ES modules, SVG, custom elements, dialogs and module workers. Serve built files over HTTP; `file:` pages cannot load its worker. The engine and drawing functions do not need DOM globals. Development and tests require Node 22 or later.
+
+## Languages
+
+The player's words are English and Japanese, chosen with the `language` option or the `lang` attribute: the buttons, the status lines, the hints and the labels read by assistive technology. Corrections to the Japanese are welcome as issues.
+
+## Roadmap
+
+The engine, the dealer, the hints and the player are in. Nothing else is promised for a date; ideas are welcome in the [issues](https://github.com/johnmorrisdotca/jirai/issues).
+
+## Architecture
+
+```text
+src/
+├── deduce.ts
+├── draw-entry.ts
+├── draw.ts
+├── element-define.ts
+├── element.ts
+├── enumerate.ts
+├── flood.ts
+├── game.ts
+├── generate.ts
+├── grid.ts
+├── index.ts
+├── jirai.constants.ts
+├── jirai.types.ts
+├── keep.ts
+├── levels.ts
+├── measure.ts
+├── mount.ts
+├── orthogonal.ts
+├── play-entry.ts
+├── random.ts
+├── react.tsx
+├── react.types.ts
+├── repair.ts
+├── shape.ts
+├── solve.ts
+├── strings.ts
+├── style.ts
+├── ui.types.ts
+└── worker.ts
+```
 
 ## The name
 
@@ -190,26 +245,14 @@ The browser player uses ES modules, SVG, custom elements, dialogs and module wor
 ground) and 雷 (*rai*, thunder): a mine is thunder buried in the ground. Every number on the board is a clue to
 where it lies. ([Wiktionary: 地雷](https://en.wiktionary.org/wiki/地雷).)
 
-## Development
+## Where it comes from
 
-```sh
-pnpm install --frozen-lockfile
-pnpm check          # lint, types and tests
-pnpm test:package   # build and import the actual npm tarball
-pnpm test:demo      # browser flows against the built page
-pnpm site           # build the standalone page into docs/
-```
+Minesweeper's rules are common property. Everything here, the rules, the dealer, the solver, the hints, the pictures and the words, is written for the package, and no third-party puzzle boards or artwork are included.
 
-The standalone game is `docs/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
-
-## Licence
-
-[MIT](LICENSE) © John Morris. No third-party puzzle boards or artwork are included.
-
-## The family
+### The family
 
 <!-- family:start (made by scripts/family-readme.mjs from scripts/family-template.mjs; change those, not this) -->
-Jirai is one of twenty-two packages, each made for the same site, each at
+Jirai is one of twenty-four packages, each made for the same site, each at
 [github.com/johnmorrisdotca](https://github.com/johnmorrisdotca). The code of every one is MIT.
 
 - [Korokoro](https://github.com/johnmorrisdotca/korokoro) (コロコロ): dice, with notation, exact odds, real sounds and the dice of many games. [Demo](https://johnmorrisdotca.github.io/korokoro/).
@@ -234,10 +277,32 @@ Jirai is one of twenty-two packages, each made for the same site, each at
 - [Tobiishi](https://github.com/johnmorrisdotca/tobiishi) (飛び石): peg solitaire with nine boards and seeded solvable challenges. [Demo](https://johnmorrisdotca.github.io/tobiishi/).
 - [Jirai](https://github.com/johnmorrisdotca/jirai) (地雷): minesweeper on shaped grids with verified no-guess boards. [Demo](https://johnmorrisdotca.github.io/jirai/).
 - [Gunjin](https://github.com/johnmorrisdotca/gunjin) (軍人): five hidden-rank strategy games with pass-the-device play. [Demo](https://johnmorrisdotca.github.io/gunjin/).
+- [Karakuri](https://github.com/johnmorrisdotca/karakuri) (からくり): eight hyper-casual puzzle games, some of them physics: draw a shield, pull pins, cut ropes, slide blocks, pour tubes. [Demo](https://johnmorrisdotca.github.io/karakuri/).
+- [Houseki](https://github.com/johnmorrisdotca/houseki) (宝石): gem and stone matching puzzles: falling triplets, stone collapse, colour chains and gem swap. [Demo](https://johnmorrisdotca.github.io/houseki/).
 
-**This package is Jirai.** The demos of all twenty-two share one header and footer, so each links the rest.
+**This package is Jirai.** The demos of all twenty-four share one header and footer, so each links the rest.
 <!-- family:end -->
 
-## Contributing and security
+## Development
 
-See [Contributing](CONTRIBUTING.md), the [Code of Conduct](CODE_OF_CONDUCT.md) and the [Security policy](SECURITY.md).
+```sh
+pnpm install --frozen-lockfile
+pnpm check          # lint, types, tests and the presentation checks
+pnpm test:package   # build and import the actual npm tarball
+pnpm test:demo      # browser flows against the built page
+pnpm site           # build the standalone page into docs/
+```
+
+The standalone game is `docs/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
+
+## Contributing
+
+Bug reports and pull requests are welcome in the [issues](https://github.com/johnmorrisdotca/jirai/issues). See [CONTRIBUTING.md](CONTRIBUTING.md), the [Code of Conduct](CODE_OF_CONDUCT.md) and the [Security policy](SECURITY.md).
+
+## Changes
+
+Every release is written up in [CHANGELOG.md](./CHANGELOG.md).
+
+## Licence
+
+[MIT](LICENSE) © John Morris. No third-party puzzle boards or artwork are included.

@@ -6,6 +6,23 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-05
+
+Nothing that was exported has changed.
+
+### Added
+
+- A test holds every `@johnmorrisdotca/jirai@N` version pin in the README to this package's major version.
+
+### Changed
+
+- The family's list, in the README and in the demo's footer, names all twenty-four packages, Karakuri and Houseki included.
+- The npm description is one sentence of 250 characters or fewer, so npm and its search show it whole; it is also the repository's About text. `homepage` is the demo site and `author` is `"John Morris"`, the same in every package.
+- The GitHub Actions workflows use the current versions of the actions (checkout 7, setup-node 7, pnpm/action-setup 6; configure-pages 6, upload-pages-artifact 5 and deploy-pages 5 for Pages), which clears GitHub's Node 20 deprecation warning.
+- Every entry has an `import` condition beside `default`.
+- The README has the family's sections in the family's order (Who it is for, Features, Use it in your project, API, Theming, Limits, Browser support, Languages, Roadmap, Architecture, Where it comes from, Changes), the family list sits under "Where it comes from", and a test holds it to them.
+- The development tools are the family's: Vitest 5 and Playwright 1.63, as in the other packages.
+
 ## [0.4.0] - 2026-10-05
 
 - **Huge fields.** `hugeSettings(level, { grid, shape, size })` and `HUGE_SIZES` (32×32, 48×24 and 24×48) give each of the four levels on a field of four times the medium level's area, 1,024 to 1,152 squares, with the level's share of mines (a 32×32 has 126, 160, 211 and 256 mines at easy, medium, hard and extra-hard), on every rule set and outline. Every one is dealt and proved to need no guess in a median of 3 to 60 ms (73 ms the slowest of ten 32×32 seeds), on the square, orthogonal, hexagonal and wraparound grids and the heart, star and hexagon outlines, and `src/huge.test.ts` wins a 32×32 at easy and at extra-hard by the explained hints alone. The demo's Level menu offers them (`?level=huge-hard`).

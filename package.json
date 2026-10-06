@@ -1,7 +1,7 @@
 {
   "name": "@johnmorrisdotca/jirai",
-  "version": "0.4.0",
-  "description": "Minesweeper on square, orthogonal, hexagonal and wraparound boards: four levels up to extra-hard, seeded games, a safe opening, verified no-guess boards, explained hints, configurable materials and markers, and a playable board for any page. Zero runtime dependencies.",
+  "version": "0.4.1",
+  "description": "Minesweeper on square, orthogonal, hexagonal and wraparound boards: four levels up to extra-hard, seeded games, a safe opening, verified no-guess boards, explained hints and a playable board for any page. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",
   "author": "John Morris",
@@ -54,30 +54,37 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
     "./orthogonal": {
       "types": "./dist/orthogonal.d.ts",
+      "import": "./dist/orthogonal.js",
       "default": "./dist/orthogonal.js"
     },
     "./play": {
       "types": "./dist/play-entry.d.ts",
+      "import": "./dist/play-entry.js",
       "default": "./dist/play-entry.js"
     },
     "./draw": {
       "types": "./dist/draw-entry.d.ts",
+      "import": "./dist/draw-entry.js",
       "default": "./dist/draw-entry.js"
     },
     "./element": {
       "types": "./dist/element.d.ts",
+      "import": "./dist/element.js",
       "default": "./dist/element.js"
     },
     "./element/define": {
       "types": "./dist/element-define.d.ts",
+      "import": "./dist/element-define.js",
       "default": "./dist/element-define.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
       "default": "./dist/react.js"
     }
   },
@@ -121,8 +128,8 @@
     "eslint": "^9.0.0",
     "typescript-eslint": "^8.0.0",
     "typescript": "^5.9.0",
-    "vitest": "^4.0.0",
-    "@playwright/test": "^1.58.0",
+    "vitest": "^5.0.0",
+    "@playwright/test": "^1.63.0",
     "@types/react": "^19.0.0",
     "react": "^19.0.0"
   },

@@ -8,7 +8,7 @@ export * from "./deduce.ts";
 export * from "./keep.ts";
 export { seededRandom } from "./random.ts";
 /** Package version, kept in step with the release metadata. */
-export const VERSION = "0.4.0";
+export const VERSION = "0.4.1";
 
 export { SHAPES, activeCell, activeCells } from "./shape.ts";
 
