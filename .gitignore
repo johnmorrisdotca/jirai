@@ -1,9 +1,6 @@
 node_modules/
 dist/
-docs/*
-!docs/API.md
-!docs/desktop.jpg
-!docs/phone.jpg
+site/
 test-results/
 playwright-report/
 *.tgz

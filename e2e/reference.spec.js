@@ -4,7 +4,7 @@ import { join } from "node:path";
 import process from "node:process";
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const id = pkg.name.split("/")[1];
-const site = join(process.cwd(), id === "jirai" ? "docs" : "site");
+const site = join(process.cwd(), "site");
 test("the API reference covers every entry and fits a phone", async ({ page }) => {
   const errors = [];
   page.on("pageerror", error => errors.push(String(error)));

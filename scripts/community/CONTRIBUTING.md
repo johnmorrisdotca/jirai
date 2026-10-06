@@ -76,29 +76,3 @@ The Release workflow (`.github/workflows/release.yml`) checks and builds the
 package, attaches the tarball to a GitHub release and publishes it to npm by
 trusted publishing, with provenance and no token. A version already on npm is
 not published again.
-
-## Particular to Jirai
-
-### Reporting a bug
-
-Open an [issue](https://github.com/johnmorrisdotca/jirai/issues). Include the board
-configuration, the seed or saved code, what you expected, what happened, and the
-browser and device.
-
-### Commands and rules
-
-```sh
-pnpm check
-pnpm test:package
-pnpm test:demo      # build the demo and play it in a real browser
-pnpm site
-```
-
-- Every rule change includes a regression test.
-- Public exports have doc comments, and the API reference is built from the source.
-- README examples, options, limits and screenshots must match the released package.
-
-### Before a release
-
-Run the checks, verify a freshly installed tarball, build the site, inspect the
-desktop and phone screenshots, and check every README, API and image link.

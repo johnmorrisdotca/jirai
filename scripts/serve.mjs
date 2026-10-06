@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { resolve, extname } from "node:path";
-const root = resolve("docs");
+const root = resolve("site");
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json" };
 createServer(async (req, res) => {
   const path = resolve(root, "." + new URL(req.url, "http://localhost").pathname);

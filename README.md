@@ -290,10 +290,10 @@ pnpm install --frozen-lockfile
 pnpm check          # lint, types, tests and the presentation checks
 pnpm test:package   # build and import the actual npm tarball
 pnpm test:demo      # browser flows against the built page
-pnpm site           # build the standalone page into docs/
+pnpm site           # build the standalone page into site/
 ```
 
-The standalone game is `docs/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
+The standalone game is `site/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
 
 ## Contributing
 

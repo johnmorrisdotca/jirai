@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "@playwright/test";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const id = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name.split("/")[1];
-const site = join(root, id === "jirai" ? "docs" : "site");
+const site = join(root, "site");
 const docs = join(root, "docs");
 mkdirSync(docs, { recursive: true });
 const host = `http://${id}.test`;
