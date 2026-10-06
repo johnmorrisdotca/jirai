@@ -1,52 +1,68 @@
-// Captures the README's real desktop and phone games from the built demo.
-import { existsSync, readFileSync, mkdirSync } from "node:fs";
-import { dirname, join, extname } from "node:path";
-import { fileURLToPath } from "node:url";
-import { chromium } from "@playwright/test";
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const id = JSON.parse(readFileSync(join(root, "package.json"), "utf8")).name.split("/")[1];
-const site = join(root, "site");
-const docs = join(root, "docs");
-mkdirSync(docs, { recursive: true });
-const host = `http://${id}.test`;
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json" };
-const browser = await chromium.launch();
-for (const phone of [false, true]) {
-  const context = await browser.newContext({ viewport: { width: phone ? 390 : 1280, height: phone ? 844 : 900 }, colorScheme: phone ? "dark" : "light", reducedMotion: "reduce", deviceScaleFactor: 2 });
-  const page = await context.newPage();
-  await page.route(`${host}/**`, route => {
-    const pathname = new URL(route.request().url()).pathname;
-    const file = join(site, pathname === "/" ? "index.html" : pathname.slice(1));
-    return existsSync(file) ? route.fulfill({ body: readFileSync(file), contentType: types[extname(file)] ?? "application/octet-stream" }) : route.fulfill({ status: 404 });
-  });
-  await page.goto(`${host}/?lang=en&seed=7&noGuess=0`);
-  if (id === "gunjin") {
-    const size = phone ? 7 : 9;
-    if (phone) { await page.locator("#size").selectOption("7"); await page.getByRole("button", { name: "New game", exact: true }).click(); }
-    for (let i = 0; i < size; i++) await page.locator(`.gj-cell[data-cell="${size * (size - 1) + i}"]`).click();
-    await page.getByRole("button", { name: "Finish setup", exact: true }).click();
-    await page.getByRole("button", { name: "Pass device", exact: true }).click();
-    for (let i = 0; i < size; i++) await page.locator(`.gj-cell[data-cell="${i}"]`).click();
-    await page.getByRole("button", { name: "Finish setup", exact: true }).click();
-    await page.getByRole("button", { name: "Pass device", exact: true }).click();
-  } else if (id === "jirai") {
-    await page.locator('[data-cell="40"]').click();
-    await page.locator('[data-cell="40"][data-kind="open"]').waitFor();
-  } else {
-    if (phone) await page.getByLabel("Board", { exact: true }).selectOption("heart");
-    else {
-      const move = await page.evaluate(async () => (await import("/dist/index.js")).classicEnglish().answer[0]);
-      await page.locator(`.cell[data-cell="${move.from}"]`).click();
-      await page.locator(`.cell[data-cell="${move.to}"]`).click();
-    }
-  }
-  if (phone) {
-    await page.getByRole("button", { name: "日本語", exact: true }).click();
-    await page.locator(id === "gunjin" ? "#player" : "#game").scrollIntoViewIfNeeded();
-  }
-  if (!phone) await page.evaluate(() => window.scrollTo(0, 0));
-  await page.screenshot({ fullPage: !phone, path: join(docs, phone ? "phone.jpg" : "desktop.jpg"), type: "jpeg", quality: 82 });
-  await context.close();
-}
-await browser.close();
-console.log("README desktop and phone screenshots saved.");
+// Takes the pictures the README shows, from the built demo in `site/`: `pnpm screenshots:readme` (builds the demo, then runs this).
+// The family's standard is in johnmorrisdotca/.github (README-STANDARD.md); the shared part is readme-pictures-lib.mjs.
+// The page is served to a browser without a port, never fetched from the live site, and the same each run: the field is named by
+// the address (rules, outline, level, seed and the cell the first reveal is made on), the board is dealt by the page's own worker,
+// and motion is reduced. It waits on the opened cell the address names, never on a clock.
+// Output: docs/images/<subject>-<desk|phone>-<light|dark>.webp.
+import { takePictures } from "./readme-pictures-lib.mjs";
+
+const GAME = ".play-panel";
+const address = (query, lang = "en") => `/?lang=${lang}&help=off&seed=7&noGuess=1&${query}`;
+const opened = (cell) => `[data-cell="${cell}"][data-kind="open"]`;
+const scrollTo = (selector) => (page) => page.locator(selector).evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
+
+await takePictures({
+  shots: [
+    // The page from the top, a hexagonal field opened. On a phone, in Japanese: the four-neighbour field, scrolled to the board.
+    {
+      subject: "hero",
+      views: ["desk", "phone"],
+      url: address("grid=hex&first=40"),
+      ready: opened(40),
+      height: 900,
+      async prepare(page, { view }) {
+        if (view === "phone") {
+          await page.goto(`http://jirai.test${address("grid=orthogonal&first=40", "ja")}`);
+          await page.waitForSelector(opened(40));
+          await scrollTo(GAME)(page);
+        } else await page.evaluate(() => window.scrollTo(0, 0));
+      },
+    },
+    // Square grids count eight neighbours.
+    { subject: "square", views: ["desk"], url: address("grid=square&first=40"), ready: opened(40), target: GAME },
+    // Orthogonal grids count four.
+    { subject: "orthogonal", views: ["desk"], url: address("grid=orthogonal&first=40"), ready: opened(40), target: GAME },
+    // Hex grids count six, drawn as hexagons.
+    { subject: "hex", views: ["desk"], url: address("grid=hex&first=40"), ready: opened(40), target: GAME },
+    // Wraparound grids join opposite edges.
+    { subject: "wraparound", views: ["desk"], url: address("grid=wrap&first=40"), ready: opened(40), target: GAME },
+    // A heart-shaped field, medium: the cut-out cells are outside it.
+    { subject: "heart", views: ["desk"], url: address("grid=square&shape=heart&level=medium&first=136"), ready: opened(136), target: GAME },
+    // A star, on the four-neighbour rule.
+    { subject: "star", views: ["desk"], url: address("grid=orthogonal&shape=star&level=medium&first=136"), ready: opened(136), target: GAME },
+    // The explained hint: the status line says which cell is certain, and why.
+    {
+      subject: "hint",
+      views: ["desk"],
+      url: address("grid=square&first=40"),
+      ready: opened(40),
+      target: GAME,
+      async prepare(page) {
+        const before = await page.locator(".jr-status").textContent();
+        await page.getByRole("button", { name: "Hint", exact: true }).click();
+        await page.waitForFunction((was) => document.querySelector(".jr-status")?.textContent !== was, before);
+      },
+    },
+    // Slate and flowers on a phone, a few cells marked.
+    {
+      subject: "slate-flowers",
+      views: ["phone"],
+      url: address("grid=square&first=40&material=slate&pieces=flowers"),
+      ready: opened(40),
+      target: GAME,
+      async prepare(page) {
+        for (const cell of [0, 8, 72]) await page.locator(`[data-cell="${cell}"]`).click({ button: "right" });
+      },
+    },
+  ],
+});

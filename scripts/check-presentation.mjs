@@ -11,8 +11,8 @@ assert.ok(read("LICENSE").toString().includes("MIT License"));
 assert.ok(!Object.keys(pkg.dependencies ?? {}).length);
 assert.ok(pkg.keywords.length >= 15);
 assert.ok(pkg.repository.url.includes(`johnmorrisdotca/${id}`));
-for (const word of ["badge.svg", "licence-MIT", "dependencies-0", "types-TypeScript", `https://johnmorrisdotca.github.io/${id}/api.html`, "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "docs/desktop.jpg", "docs/phone.jpg"]) assert.ok(text.includes(word), `README missing ${word}`);
-for (const file of ["desktop", "phone"]) assert.ok(statSync(new URL(`../docs/${file}.jpg`, import.meta.url)).size > 10000, `Missing ${file} screenshot`);
+for (const word of ["badge.svg", "licence-MIT", "dependencies-0", "types-TypeScript", `https://johnmorrisdotca.github.io/${id}/api.html`, "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md", "docs/images/hero-desk-light.webp", "docs/images/hero-phone-light.webp"]) assert.ok(text.includes(word), `README missing ${word}`);
+for (const file of ["hero-desk", "hero-phone"]) for (const scheme of ["light", "dark"]) assert.ok(statSync(new URL(`../docs/images/${file}-${scheme}.webp`, import.meta.url)).size > 10000, `Missing ${file} ${scheme} picture`);
 for (const file of ["SECURITY.md", "CODE_OF_CONDUCT.md"]) assert.deepEqual(read(file), read(`scripts/community/${file}`), `${file} differs from the shared copy`);
 // The family template, its hash and its list are held by src/family.test.js.
 const entries = apiOf();

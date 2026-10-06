@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/jirai",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Minesweeper on square, orthogonal, hexagonal and wraparound boards: four levels up to extra-hard, seeded games, a safe opening, verified no-guess boards, explained hints and a playable board for any page. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",
@@ -113,7 +113,8 @@
     "test:package": "pnpm build && node scripts/check-package.mjs",
     "prepublishOnly": "pnpm check && pnpm test:package",
     "check:presentation": "node scripts/check-presentation.mjs",
-    "pictures": "pnpm site && node scripts/readme-pictures.mjs"
+    "screenshots:readme": "pnpm site && node scripts/readme-pictures.mjs",
+    "test:readme": "pnpm build && node scripts/check-readme-examples.mjs"
   },
   "peerDependencies": {
     "react": ">=18"

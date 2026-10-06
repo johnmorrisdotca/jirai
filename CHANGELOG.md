@@ -6,8 +6,22 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-10-06
+
+Nothing that was exported has changed. The README is the family's one layout, in full.
+
+### Added
+
+- The README has a picture of the demo on a desk and on a phone, in light and dark, taken from the demo by `pnpm screenshots:readme` (the pictures are in `docs/images/` and are not in the package), a picture of each rule set and outline (square, orthogonal, hexagonal, wraparound, a heart, a star), of the explained hint and of the slate board with flowers on a phone, an Examples section of twelve examples that run, examples for React, Vue, Svelte and Angular, tables of the entry points, the calls to learn first and every theme property, and an Accessibility section.
+- `pnpm test:readme` type-checks and runs every TypeScript and JavaScript example in the README against the built package, as a job of its own in CI; `src/readme.test.js` holds the README to the family's standard (sections in order, languages on code fences, pictures with alt text and a caption, no marketing words, version pins) in `pnpm check`; `pnpm test:package` fails if a picture or anything under `docs/` is in the packed package.
+
+### Fixed
+
+- The README told readers to import `DEFAULT_SETTINGS` from `@johnmorrisdotca/jirai/play`, which does not export it (it is in the main entry), and showed `opening="clear"` on `<jirai-board>`, which does not read an `opening` attribute (the tag reads `width`, `height`, `mines`, `seed`, `grid`, `shape`, `no-guess`, `material`, `pieces` and `lang`). Both examples are corrected, and every TypeScript example is now type-checked and run.
+
 ### Changed
 
+- `pnpm pictures` is `pnpm screenshots:readme`, and takes WebP pictures in light and dark under `docs/images/`; `docs/desktop.jpg` and `docs/phone.jpg` are gone, and the presentation check looks for the hero pictures there instead.
 - Repository only: the package and everything it exports are unchanged. `CONTRIBUTING.md` is the family's one text with a section of its own for Jirai, held to the master in johnmorrisdotca/.github by `src/family.test.js`; `ci.yml` and `pages.yml` are the family's one text (`pnpm check`, the demo, and the package on Linux, macOS and Windows), and any jobs of the package's own after them.
 - The demo's page titles read `Jirai · pitch`, like the rest of the family's.
 - The demo's own stylesheet is `demo/jirai.css`, named for the package like the family's.

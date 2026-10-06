@@ -13,10 +13,24 @@ Minesweeper across four-neighbour, eight-neighbour, hexagonal and wraparound gri
 
 <p align="center"><a href="https://johnmorrisdotca.github.io/jirai/"><strong>Play Jirai →</strong></a> · <a href="https://johnmorrisdotca.github.io/jirai/api.html">API reference</a></p>
 
-<p align="center">
-  <img src="docs/desktop.jpg" alt="Jirai on a desktop: the Minesweeper board and its shape, grid, size, mine-count and material controls in the shared family demo style" width="680">
-  <img src="docs/phone.jpg" alt="Jirai on a phone: a square minefield with touch controls and clear number clues" width="220">
-</p>
+<table align="center">
+<tr>
+<td align="center" valign="top">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hero-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hero-desk-light.webp" alt="The demo on a desk, in English: the page header with the language chooser, the API reference link, five cloth patches and the Help switch, the Your field choices (board, shape, level, width, height, mines, no-guess, first opening, material, markers and seed), and the Hexagonal field on green felt: a nine by nine board of hexagons on a wooden tray with the opened cells showing blue and green number clues, the counters Mines left 10, Time 0:00 and Moves 1, and the Start over, Open, Hint and Just the board buttons" width="600">
+</picture>
+<br><em>The demo on a desk: a hexagonal field, opened at its middle.</em>
+</td>
+<td align="center" valign="top">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hero-phone-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hero-phone-light.webp" alt="The demo on a phone, in Japanese: an orthogonal nine by nine field with opened cells and number clues, the status line 数字を手がかりに、安全なマスをすべて開けましょう, the buttons やり直す, 開く, ヒント and 盤だけ, and the start of the rules under it" width="190">
+</picture>
+<br><em>On a phone, in Japanese, in the device's light or dark.</em>
+</td>
+</tr>
+</table>
 
 Jirai is a Minesweeper rules engine and player for TypeScript and JavaScript. The core is plain functions; drawing, browser controls, a custom element and an optional React wrapper are separate imports. The package has no runtime dependencies and needs Node 22 or a modern browser.
 
@@ -39,7 +53,7 @@ For a dedicated four-neighbour variant, its entry fixes the topology for you:
 ```ts
 import { makeOrthogonalBoard, newOrthogonalGame } from "@johnmorrisdotca/jirai/orthogonal";
 
-const settings = { width: 9, height: 9, mines: 10, noGuess: true, opening: "clear", seed: 42 };
+const settings = { width: 9, height: 9, mines: 10, noGuess: true, opening: "clear" as const, seed: 42 };
 const game = newOrthogonalGame(settings);
 const board = makeOrthogonalBoard(settings, 40); // counts only edge-sharing neighbours
 ```
@@ -62,12 +76,96 @@ const board = makeOrthogonalBoard(settings, 40); // counts only edge-sharing nei
 - **Accessible controls:** keyboard navigation, pointer and touch, long press to mark, English and Japanese strings, and board labels read by assistive technology.
 - **Materials and markers:** ivory, wood or slate; flags, stones or flowers. Host CSS can replace the palette.
 
+### What's in it
+
+Each picture is the real player, drawn by the package and taken from [the demo](https://johnmorrisdotca.github.io/jirai/) with `pnpm screenshots:readme`, in light and dark. Every field is the same seed, opened at the same cell, so the pictures are the same each run.
+
+<table>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/square-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/square-desk-light.webp" alt="A nine by nine square field on a wooden tray on a desk, opened at its middle cell, with blue, green and red number clues, the counters Mines left 10, Time 0:00 and Moves 1, and the Start over, Open, Hint and Just the board buttons" width="360">
+</picture>
+<br><em><strong>Square.</strong> A number counts the eight cells around it.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/orthogonal-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/orthogonal-desk-light.webp" alt="A nine by nine orthogonal field on a desk, opened at its middle cell: the opened patch is larger and the clues are fewer, the title Orthogonal field and the counters Mines left 10" width="360">
+</picture>
+<br><em><strong>Orthogonal.</strong> A number counts only the four cells that share an edge.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hex-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hex-desk-light.webp" alt="A nine by nine hexagonal field on a desk: rows of hexagons offset along a slanting parallelogram, opened at its middle with blue and green clues, titled Hexagonal field" width="360">
+</picture>
+<br><em><strong>Hexagonal.</strong> A number counts the six cells around a hexagon.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/wraparound-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/wraparound-desk-light.webp" alt="A nine by nine wraparound field on a desk, opened at its middle, with clues along its edges that count cells on the opposite edge, titled Wraparound field" width="360">
+</picture>
+<br><em><strong>Wraparound.</strong> Opposite edges join, so a clue on an edge counts across it.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/heart-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/heart-desk-light.webp" alt="A heart-shaped sixteen by sixteen field on a desk, made of square cells with the cut-out corners missing, opened in its middle, with many number clues and the counters Mines left 27" width="360">
+</picture>
+<br><em><strong>A heart.</strong> Outlines cut cells out of the field: a heart, a star or a hexagon, with the level's share of mines.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/star-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/star-desk-light.webp" alt="A star-shaped sixteen by sixteen orthogonal field on a desk, a five-pointed star of square cells with its points cut out of the rectangle, opened in its middle, with the counters Mines left 14" width="360">
+</picture>
+<br><em><strong>A star.</strong> Shaped boards work on every rule; here the four-neighbour rule.</em>
+</td>
+</tr>
+<tr>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hint-desk-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/hint-desk-light.webp" alt="A nine by nine square field on a desk after the Hint button: one cell is outlined in pale green, and the status line says This cell is safe. The neighbouring count settles it." width="360">
+</picture>
+<br><em><strong>The explained hint.</strong> The cell is outlined and the line says why it is certain.</em>
+</td>
+<td align="center" valign="top" width="50%">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/slate-flowers-phone-dark.webp">
+<img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/slate-flowers-phone-light.webp" alt="A nine by nine field on a phone in the slate material with flowers as markers: dark grey cells with white numbers, three flowers marking covered cells, the counters Mines left 8, Time 0:00 and Moves 3, the status line, the buttons Start over, Open, Hint and Just the board, and the line of help under them" width="240">
+</picture>
+<br><em><strong>On a phone.</strong> Slate with flowers; a tap opens, and a long press or the Open button marks.</em>
+</td>
+</tr>
+</table>
+
 ## Use it in your project
+
+### Install
+
+```sh
+npm install @johnmorrisdotca/jirai
+pnpm add @johnmorrisdotca/jirai
+yarn add @johnmorrisdotca/jirai
+```
+
+It is ES modules only, with its types included, and needs Node 22 or later outside a browser. A page with no bundler loads the tag from a CDN (`@0` is the major version).
+
+### A player from a script
 
 Mount a player into any element. The first reveal asks the module worker to deal the board, so serve the package over HTTP and allow same-origin module workers in your content security policy.
 
-```ts
-import { DEFAULT_SETTINGS, mountJirai } from "@johnmorrisdotca/jirai/play";
+```ts no-run
+import { DEFAULT_SETTINGS } from "@johnmorrisdotca/jirai";
+import { mountJirai } from "@johnmorrisdotca/jirai/play";
 
 const board = mountJirai(document.querySelector<HTMLElement>("#game")!, {
   settings: { ...DEFAULT_SETTINGS, grid: "orthogonal", seed: 7 },
@@ -85,6 +183,8 @@ board.destroy();
 
 The handle also provides `game()`, `progress()`, `play(cell, mark?)`, `hint()`, and `load(settings, progress?)`. Set `controls: false` when your page supplies its own controls and status. Change options with `set`; call `destroy` when the host is removed.
 
+### The tag
+
 Use the custom element without a mount call:
 
 ```html
@@ -92,11 +192,312 @@ Use the custom element without a mount call:
   import "@johnmorrisdotca/jirai/element/define";
 </script>
 <jirai-board width="9" height="9" mines="10" seed="42"
-  grid="orthogonal" opening="clear" no-guess="true"
+  grid="orthogonal" no-guess="true"
   material="wood" pieces="stones" lang="ja"></jirai-board>
 ```
 
+The tag reads `width`, `height`, `mines`, `seed`, `grid`, `shape`, `no-guess`, `material`, `pieces` and `lang`, and mounts again when one changes; the first opening is the default (`clear`), and `jirai-error` is the event it fires when a field cannot be dealt.
+
+### The React component
+
 The optional React entry exports `JiraiBoard` from `@johnmorrisdotca/jirai/react`; React is an optional peer dependency. Its options are read when mounted. Use a new React `key` to start with a different settings object.
+
+### In a framework
+
+Two ways: the `<jirai-board>` tag, which every framework can carry, and `JiraiBoard`, the React component. The player deals a board in a module worker, so the page must be served over HTTP.
+
+#### React
+
+```jsx
+import { JiraiBoard } from "@johnmorrisdotca/jirai/react";
+
+export function Game({ seed }) {
+  // The options are read when it mounts: a new key starts it with different settings.
+  return <JiraiBoard key={seed} settings={{ grid: "orthogonal", width: 9, height: 9, mines: 10, seed }} material="wood" onFinish={(game) => console.log(game.status)} />;
+}
+```
+
+#### Vue
+
+Vue needs to be told that `jirai-board` is a custom element, a compiler option.
+
+```vue
+<script setup>
+import "@johnmorrisdotca/jirai/element/define";
+defineProps({ seed: Number });
+</script>
+
+<template>
+  <jirai-board width="9" height="9" mines="10" :seed="seed" grid="hex" material="slate" pieces="flowers"></jirai-board>
+</template>
+```
+
+```js no-check
+// vite.config.js
+import vue from "@vitejs/plugin-vue";
+
+export default { plugins: [vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === "jirai-board" } } })] };
+```
+
+#### Svelte
+
+```svelte
+<script>
+  import "@johnmorrisdotca/jirai/element/define";
+  export let seed = 42;
+</script>
+
+<jirai-board width="16" height="16" mines="40" {seed} grid="square" lang="ja"></jirai-board>
+```
+
+#### Angular
+
+```ts no-check
+import { Component, CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import "@johnmorrisdotca/jirai/element/define";
+
+@Component({
+  selector: "app-game",
+  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  template: `<jirai-board width="9" height="9" mines="10" seed="42" grid="orthogonal"></jirai-board>`,
+})
+export class GameComponent {}
+```
+
+## Examples
+
+Each example is a whole recipe: copy it and it works. The ones in TypeScript are run in CI against the built package (`pnpm test:readme`), so none of them is a guess, and the output shown is what they print.
+
+### A game on a page with no script of your own
+
+Save this as a file, serve it over HTTP (the player deals in a module worker, which a `file:` page cannot load) and open it: a hexagonal field, dealt from a seed that is proved to need no guess.
+
+```html
+<!doctype html>
+<meta charset="utf-8">
+<title>Jirai</title>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@johnmorrisdotca/jirai@0/dist/element-define.js"></script>
+<jirai-board width="12" height="12" mines="22" seed="2026" grid="hex" material="wood" pieces="flowers"></jirai-board>
+```
+
+### The first move deals the board
+
+`newGame` makes a ready game with no mines in it. The first reveal deals the seeded field, with that cell and, by default, its neighbours safe, so nobody loses on the first move.
+
+```ts
+import { DEFAULT_SETTINGS, newGame, play } from "@johnmorrisdotca/jirai";
+
+let game = newGame({ ...DEFAULT_SETTINGS, width: 9, height: 9, mines: 10, seed: 42 });
+console.log(game.status, game.board);                           // ready, nothing dealt yet
+game = play(game, { kind: "reveal", cell: 40 });
+console.log(game.status, "dealt around cell", game.board!.first, "with", game.board!.mines.filter(Boolean).length, "mines");
+console.log(play(game, { kind: "reveal", cell: 999 }) === game);   // a move that cannot be made returns the same game
+```
+
+```text
+ready null
+playing dealt around cell 40 with 10 mines
+true
+```
+
+### A hint that proves its answer
+
+`hintFor` reads only what is opened, never the hidden mines, and says which cells are certain, and from which clue. Flags are marks and never evidence.
+
+```ts
+import { DEFAULT_SETTINGS, hintFor, newGame, play, visibleGame } from "@johnmorrisdotca/jirai";
+
+let game = newGame({ ...DEFAULT_SETTINGS, seed: 42 });
+game = play(game, { kind: "reveal", cell: 40 });
+const hint = hintFor(visibleGame(game))!;
+console.log(hint);
+```
+
+```text
+{
+  safe: [ 5 ],
+  mines: [],
+  reason: 'count',
+  sources: [ 6 ],
+  contradiction: false
+}
+```
+
+### Solve a field with nothing but hints
+
+A no-guess field can be finished by deduction alone, so a bot needs no luck: ask for a hint, open what is safe, flag what is a mine, and repeat. A medium field and a hex star at the hard level are both cleared.
+
+```ts
+import { DEFAULT_SETTINGS, gameProgress, hintFor, levelSettings, newGame, play, visibleGame } from "@johnmorrisdotca/jirai";
+
+for (const [label, extra] of [["square", {}], ["hex star", { grid: "hex", shape: "star" }]] as const) {
+  const level = label === "square" ? "medium" : "hard";
+  const settings = { ...DEFAULT_SETTINGS, ...extra, ...levelSettings(level, extra), seed: 3, noGuess: true };
+  let game = play(newGame(settings), { kind: "reveal", cell: Math.floor(settings.height / 2) * settings.width + Math.floor(settings.width / 2) });
+  let hints = 0;
+  while (game.status === "playing") {
+    const hint = hintFor(visibleGame(game));
+    if (hint === null || (hint.safe.length === 0 && hint.mines.length === 0)) break;
+    hints += 1;
+    for (const cell of hint.safe) game = play(game, { kind: "reveal", cell });
+    for (const cell of hint.mines) if (game.marks[cell] !== "flag") game = play(game, { kind: "mark", cell });
+  }
+  console.log(label, game.status, `after ${hints} hints and ${game.moves.length} moves; saved in ${gameProgress(game).length} characters`);
+}
+```
+
+```text
+square won after 51 hints and 77 moves; saved in 2334 characters
+hex star won after 34 hints and 50 moves; saved in 1601 characters
+```
+
+### Levels, outlines and huge fields
+
+Four levels step up in size and mine share, on every rule and outline; a shaped board keeps the level's share of mines over the cells it has left. `hugeSettings` is the same on a field of four times the area.
+
+```ts
+import { hugeSettings, levelSettings } from "@johnmorrisdotca/jirai";
+
+console.log(levelSettings("hard"));
+console.log(levelSettings("extra-hard", { grid: "hex", shape: "star" }));
+console.log(hugeSettings("hard"));
+```
+
+```text
+{ width: 30, height: 16, mines: 99 }
+{ width: 40, height: 24, mines: 85 }
+{ width: 32, height: 32, mines: 211 }
+```
+
+### Deal a field and check it
+
+`makeBoard` deals at a first cell; with `noGuess` it returns only a board its solver can finish. `measureBoard` grades it with the same deductions the hints use, so levels can be put in order.
+
+```ts
+import { DEFAULT_SETTINGS, isSolvable, makeBoard, measureBoard } from "@johnmorrisdotca/jirai";
+
+const board = makeBoard({ ...DEFAULT_SETTINGS, noGuess: true, seed: 7 }, 40);
+console.log(isSolvable(board), board.mines.filter(Boolean).length, "mines; dealt on attempt", board.attempt);
+const grade = measureBoard(board);
+console.log(`score ${grade.score}, depth ${grade.depth}, solvable ${grade.solvable}`);
+```
+
+```text
+true 10 mines; dealt on attempt 0
+score 27.2, depth 10, solvable true
+```
+
+### Who touches whom
+
+The rule sets differ only in which cells a number counts. `neighbours` says, for any cell, which cells those are.
+
+```ts
+import { DEFAULT_SETTINGS, neighbours } from "@johnmorrisdotca/jirai";
+
+for (const grid of ["square", "orthogonal", "hex", "wrap"] as const) {
+  console.log(grid.padEnd(10), "cell 40:", neighbours({ ...DEFAULT_SETTINGS, grid }, 40).length, "neighbours; cell 0:", neighbours({ ...DEFAULT_SETTINGS, grid }, 0).length);
+}
+```
+
+```text
+square     cell 40: 8 neighbours; cell 0: 3 neighbours
+orthogonal cell 40: 4 neighbours; cell 0: 2 neighbours
+hex        cell 40: 6 neighbours; cell 0: 2 neighbours
+wrap       cell 40: 8 neighbours; cell 0: 8 neighbours
+```
+
+### Keep a game and read it back
+
+A saved game is the settings and the moves, not an answer anybody could edit. Reading it replays every move under the rules, so a record that is not a game is `null`.
+
+```ts
+import { DEFAULT_SETTINGS, gameFromProgress, gameProgress, newGame, play } from "@johnmorrisdotca/jirai";
+
+let game = newGame({ ...DEFAULT_SETTINGS, seed: 42 });
+game = play(game, { kind: "reveal", cell: 40 });
+const saved = gameProgress(game);
+console.log(saved);
+console.log(gameFromProgress(saved)?.status, gameFromProgress("not a game"), gameFromProgress(saved.slice(0, 60)));
+```
+
+```text
+{"version":1,"settings":{"width":9,"height":9,"mines":10,"grid":"square","noGuess":true,"opening":"clear","seed":42},"moves":[{"kind":"reveal","cell":40}],"helped":false}
+playing null null
+```
+
+### Today's field
+
+`dailySeed` is the same seed for everyone on a date (UTC), per rule set, so a site can offer a daily field with nothing stored.
+
+```ts
+import { dailySeed } from "@johnmorrisdotca/jirai";
+
+console.log(dailySeed("2026-10-01"), dailySeed("2026-10-01", "hex"), dailySeed("2026-10-01") === dailySeed("2026-10-01"));
+```
+
+```text
+1293497838 968579362 true
+```
+
+### Draw it yourself
+
+`boardModel` is the board as row-major labelled cells with no DOM, for a page that draws its own. Each cell says where it is, what it reads aloud and what state it is in.
+
+```ts
+import { DEFAULT_SETTINGS, newGame, play } from "@johnmorrisdotca/jirai";
+import { boardModel } from "@johnmorrisdotca/jirai/draw";
+
+const game = play(newGame({ ...DEFAULT_SETTINGS, seed: 42 }), { kind: "reveal", cell: 40 });
+const model = boardModel(game, {});
+console.log(model.width, "by", model.height, "=", model.cells.length, "cells");
+console.log(model.cells[40]);
+```
+
+```text
+9 by 9 = 81 cells
+{
+  cell: 40,
+  x: 4,
+  y: 4,
+  width: 1,
+  height: 1,
+  label: '5, 5: empty',
+  text: '',
+  kind: 'open',
+  hint: false
+}
+```
+
+### A player you steer from code
+
+```ts no-run
+import { DEFAULT_SETTINGS } from "@johnmorrisdotca/jirai";
+import { mountJirai } from "@johnmorrisdotca/jirai/play";
+
+const board = mountJirai(document.querySelector<HTMLElement>("#game")!, {
+  settings: { ...DEFAULT_SETTINGS, grid: "wrap", seed: 7 },
+  material: "slate",
+  pieces: "flowers",
+  language: "ja",
+  onChange: () => localStorage.setItem("jirai", board.progress()),     // keep the game as it is played
+  onFinish: (game) => console.log(game.status, game.helped),           // won or lost, and whether a hint was used
+});
+const kept = localStorage.getItem("jirai");
+if (kept) board.load({ ...DEFAULT_SETTINGS, grid: "wrap", seed: 7 }, kept);   // play a kept game back
+```
+
+### A look of your own
+
+The player is themed by custom properties, and `material` and `pieces` change how the cells and markers look, never the rules.
+
+```css
+jirai-board .jr-root[data-material] {   /* as specific as the material's own rule, so that it wins */
+  --jr-cover: #cfd8dc;
+  --jr-open: #eceff1;
+  --jr-ink: #263238;
+}
+```
 
 ## Rules and settings
 
@@ -163,11 +564,46 @@ The full engine entry is `@johnmorrisdotca/jirai`; four-neighbour helpers are in
 
 Every export of every entry point is in the [API reference](https://johnmorrisdotca.github.io/jirai/api.html), made from the source when the demo is built, and the [API guide](docs/API.md) lists the entries and public calls in prose.
 
+### Entry points
+
+| Import | What it holds |
+| --- | --- |
+| `@johnmorrisdotca/jirai` | The rules engine, grid and shape utilities, levels, the dealer and solver, hints and saved progress |
+| `@johnmorrisdotca/jirai/orthogonal` | The explicit four-neighbour game, board, hint and version-2 save helpers |
+| `@johnmorrisdotca/jirai/draw` | `boardModel`, `JIRAI_STYLE` and the drawing model types |
+| `@johnmorrisdotca/jirai/play` | `mountJirai` and the player's types and options |
+| `@johnmorrisdotca/jirai/element` | `JiraiElement` and `defineJirai`, which registers nothing until called |
+| `@johnmorrisdotca/jirai/element/define` | Defines `<jirai-board>` by being imported |
+| `@johnmorrisdotca/jirai/react` | The optional `JiraiBoard` component; React is an optional peer |
+
+### The calls to learn first
+
+| Call | What it does |
+| --- | --- |
+| `newGame(settings)` and `play(game, move)` | A ready game, and the game after a move; a move that cannot be made returns the same game |
+| `visibleGame(game)` and `hintFor(visible)` | What a player can see, and the cells that are certain from it |
+| `makeBoard(settings, first, options)` and `isSolvable(board)` | A seeded field dealt at a first cell, and whether deduction can finish it |
+| `levelSettings(level, options)` and `hugeSettings(level, options)` | The size and mines of a level, on any rule and outline |
+| `gameProgress(game)` and `gameFromProgress(text)` | A game as text, and back; `null` for a record that is not a game |
+| `boardModel(game, options)` | The board as labelled cells, for a page that draws its own |
+| `mountJirai(element, options)` | The player |
+
 ## Theming
 
 `boardModel(game, options)` returns row-major labelled cells without touching the DOM. The draw entry exports `JIRAI_STYLE` and the board model. The player uses the same theme variables as its SVG and HTML controls; set `material`, `pieces`, and `language` on mount or override the CSS custom properties in your host.
 
 Materials are `ivory`, `wood` and `slate`. Marker sets are `flags`, `stones` and `flowers`. They change appearance only; the engine still stores covered, flag, question or open states.
+
+| Property | What it colours | Ivory | Wood | Slate |
+| --- | --- | --- | --- | --- |
+| `--jr-ground` | the tray round the board | `#a98954` | `#ae804a` | `#252e32` |
+| `--jr-cover` | a covered cell | `#fbf8f1` | `#e0bb7e` | `#455359` |
+| `--jr-open` | an opened cell | `#efe8d8` | `#c69d63` | `#303c41` |
+| `--jr-line` | the lines between cells | `#cfc6b2` | `#936e40` | `#62747a` |
+| `--jr-ink` | the digits and marks | `#1f2320` | `#352c20` | `#f3f0e5` |
+| `--jr-accent` | the cell a hint outlines | `#2f7a4f` | `#2f7a4f` | `#b7d298` |
+
+They are set on `.jr-root`, and the material sets them again with `.jr-root[data-material=…]`, so a host rule must be as specific (`.jr-root[data-material]`) to win. The buttons take `--jr-ui-ink`, `--jr-ui-line` and `--jr-ui-surface`, which follow the page's `--ink`, `--rule` and `--surface` when it has them, as the family's demos do.
 
 ## Limits
 
@@ -191,6 +627,16 @@ The board is capped at 60 cells per side and 2,400 cells overall. Shapes need at
 - The widest fields (30 and 40 columns) scroll sideways inside the board on a narrow screen, as hard always has.
 
 For synchronous server use, consider running a deal in a worker; a browser deals extra-hard in the board's own worker without a pause.
+
+## Accessibility
+
+- **Every cell is a button with a name.** A screen reader hears the cell's place and state ("5, 5: empty", "3, 2: flag", the number a clue shows), and the board is a labelled group, with `aria-busy` while a field is being dealt. `boardModel` gives the same label for a board you draw yourself.
+- **The status line is spoken.** What to do next, what a hint proved and how the game ended is a `role="status"` line, so a change is announced without moving focus. A hint says which cell is certain and why, so it teaches the deduction as well as giving the answer.
+- **The keyboard plays the whole game.** The board has one tab stop and the arrow keys move between cells; Enter opens, F or Space marks, and an open number whose flags match clears its neighbours. The buttons (Start over, Open or Mark, Hint, Just the board) are native buttons.
+- **Touch and pointer.** Tap opens, a long press or right-click marks, and a Mark button switches a touch screen between opening and marking (`aria-pressed`), so nothing needs a long press. The buttons are at least 44 pixels high.
+- **A number is not told by colour alone.** The clue is a digit, in a colour per value for those who see it; flags, stones and flowers are different shapes, not different colours, and every cell state has its name in the label.
+- **Reduced motion.** The only transition, a cell's background, is on only for `prefers-reduced-motion: no-preference`.
+- **Not yet.** The colour pairs of the three materials have not been measured against WCAG contrast ratios. A very wide field (30 and 40 columns) scrolls sideways inside its box on a narrow screen. The Japanese has not been read by a native reader (see [Languages](#languages)).
 
 ## Browser support
 
@@ -245,9 +691,13 @@ src/
 ground) and 雷 (*rai*, thunder): a mine is thunder buried in the ground. Every number on the board is a clue to
 where it lies. ([Wiktionary: 地雷](https://en.wiktionary.org/wiki/地雷).)
 
-## Where it comes from
+## Where it comes from, and where it is used
 
 Minesweeper's rules are common property. Everything here, the rules, the dealer, the solver, the hints, the pictures and the words, is written for the package, and no third-party puzzle boards or artwork are included.
+
+### Used by
+
+Using Jirai in something? Open an *Add my project* issue and we will add you.
 
 ### The family
 
@@ -291,6 +741,8 @@ pnpm check          # lint, types, tests and the presentation checks
 pnpm test:package   # build and import the actual npm tarball
 pnpm test:demo      # browser flows against the built page
 pnpm site           # build the standalone page into site/
+pnpm test:readme    # run every example in this README against the built package
+pnpm screenshots:readme  # take the README's pictures from the built demo, in light and dark
 ```
 
 The standalone game is `site/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
@@ -301,7 +753,7 @@ Bug reports and pull requests are welcome in the [issues](https://github.com/joh
 
 ## Changes
 
-Every release is written up in [CHANGELOG.md](./CHANGELOG.md).
+Every release is written up in [CHANGELOG.md](./CHANGELOG.md). The latest release, 0.4.2, adds no code: it is this README in full, with pictures of every rule set and outline, examples that are run on every change, examples for React, Vue, Svelte and Angular, and an Accessibility section.
 
 ## Licence
 
