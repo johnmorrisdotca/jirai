@@ -48,13 +48,13 @@ export function mountJirai(host: HTMLElement, options: MountOptions = {}): Jirai
     if (started === null && current.board !== null && current.status === STATUSES.playing) started = Date.now();
     if (current.status === STATUSES.won || current.status === STATUSES.lost) { elapsed = clock(); started = null; }
     const detail = structuredClone(current);
-    host.dispatchEvent(new CustomEvent("jirai-change", { detail })); options.onChange?.(detail);
+    host.dispatchEvent(new CustomEvent("jirai-change", { detail, bubbles: true, composed: true })); options.onChange?.(detail);
     if (before !== current.status && (current.status === STATUSES.won || current.status === STATUSES.lost)) {
-      host.dispatchEvent(new CustomEvent("jirai-finish", { detail })); options.onFinish?.(detail);
+      host.dispatchEvent(new CustomEvent("jirai-finish", { detail, bubbles: true, composed: true })); options.onFinish?.(detail);
     }
     render();
   }
-  function failed(error: Error): void { stopWorker(); render(); status.textContent = words(draw.language).error; options.onError?.(error); }
+  function failed(error: Error): void { stopWorker(); render(); status.textContent = words(draw.language).error; options.onError?.(error); host.dispatchEvent(new CustomEvent("jirai-error", { bubbles: true, composed: true, detail: { message: error.message } })); }
   function make(move: Move): void {
     if (disposed || pending) return;
     if (move.kind === MOVES.reveal && current.board === null && current.marks[move.cell] !== MARKS.flag && validCell(current.settings, move.cell)) {

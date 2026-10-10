@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="color-scheme" content="light dark"><title>Jirai · Minesweeper</title><style>html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}body{display:flex;align-items:center;justify-content:center;padding:8px;box-sizing:border-box}jirai-board{max-height:100%}</style></head><body><script type="module">
+import "../dist/element-define.js";
+import { DEFAULT_SETTINGS, validSettings, gameFromProgress } from "../dist/index.js";
+import { embedDay } from "../dist/embed-day.js";
+const query=new URLSearchParams(location.search),board=document.createElement("jirai-board");
+const integer=(name,min,max)=>{const value=query.get(name);if(value===null||!/^\d+$/.test(value))return null;const number=Number(value);return number>=min&&number<=max?number:null;};
+const one=(name,choices)=>{const value=query.get(name);if(choices.includes(value))board.setAttribute(name,value);};
+const settings={...DEFAULT_SETTINGS};
+for(const [name,key,min,max]of[["cols","width",3,60],["rows","height",3,60],["mines","mines",1,2399],["seed","seed",0,4294967295]]){const value=integer(name,min,max);if(value!==null)settings[key]=value;}
+// Width/height were board dimensions before cols/rows existed.
+if(!query.has("cols")){const old=integer("width",3,60);if(old!==null)settings.width=old;}if(!query.has("rows")){const old=integer("height",3,60);if(old!==null)settings.height=old;}
+for(const[name,choices]of[["grid",["square","orthogonal","hex","wrap"]],["shape",["rectangle","heart","star","hexagon"]],["opening",["safe","clear"]]])if(choices.includes(query.get(name)))settings[name]=query.get(name);
+if(query.has("no-guess")&&["","true","on","1","false","off","no","0"].includes(query.get("no-guess").toLowerCase()))settings.noGuess=!["false","off","no","0"].includes(query.get("no-guess").toLowerCase());
+if(validSettings(settings)){for(const[name,key]of[["cols","width"],["rows","height"],["mines","mines"],["seed","seed"],["grid","grid"],["shape","shape"],["opening","opening"],["no-guess","noGuess"]])if(settings[key]!==undefined)board.setAttribute(name,String(settings[key]));}
+board.setAttribute("size","medium");for(const[name,choices]of[["size",["small","medium","large"]],["theme",["auto","light","dark"]],["lang",["en","ja"]],["material",["ivory","wood","slate"]],["pieces",["flags","stones","flowers"]]])one(name,choices);
+const width=integer("width",100,2000);if(width!==null)board.setAttribute("width",String(width));
+if(query.has("daily"))try{embedDay(query.get("daily"));board.setAttribute("daily",query.get("daily"));}catch{/* Ignore an invalid day. */}
+if(query.has("controls")&&["","true","on","1","false","off","no","0"].includes(query.get("controls").toLowerCase()))board.setAttribute("controls",query.get("controls"));
+if(query.has("label")&&query.get("label").length<=200)board.setAttribute("label",query.get("label"));
+if(query.has("progress")&&query.get("progress").length<=10000&&gameFromProgress(query.get("progress"))!==null)board.setAttribute("progress",query.get("progress"));
+if(query.get("lang")==="ja")document.documentElement.lang="ja";
+for(const type of["jirai-load","jirai-error","jirai-change","jirai-finish"])board.addEventListener(type,event=>{if(parent!==window)parent.postMessage({type:event.type,detail:JSON.parse(JSON.stringify(event.detail))},"*");});document.body.append(board);
+</script></body></html>

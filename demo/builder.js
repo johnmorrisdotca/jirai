@@ -1,0 +1,37 @@
+import { VERSION, DEFAULT_SETTINGS, validSettings } from "./dist/index.js";
+import { JiraiElement, JIRAI_EMBED_OPTION_KEYS } from "./dist/element.js";
+import { embedDay } from "./dist/embed-day.js";
+import "./dist/element-define.js";
+import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-builder.js";
+const words = {
+ en: { ...FAMILY_EMBED_BUILDER_WORDS.en, pitch: "Choose a Minesweeper field, preview it and copy its embed code.", name: "Jirai means landmine in Japanese.", nameLink: "About the name", foot: "The setup is in the link. No play or personal data is stored.", toGallery: "The minefields", makerBoard: "A minefield", makerBoardSays: "A playable field with square, hexagonal or joined edges.", copyLink: "Copy a link to this field", badSettings: "Choose a valid field: enough active cells for the mines, at most 2,400 cells, and rectangular shape for wrap.", badDay: "Use a real UTC date written YYYY-MM-DD, today or off." },
+ ja: { ...FAMILY_EMBED_BUILDER_WORDS.ja, pitch: "地雷の盤を選び、プレビューを確認して、ページに埋め込むコードをコピーできます。", name: "「地雷」は英語の landmine に当たる日本語です。", nameLink: "名前について", foot: "設定はリンクに入ります。プレイや個人情報は保存しません。", toGallery: "地雷の盤", makerBoard: "地雷の盤", makerBoardSays: "四角、六角、または端がつながる盤で遊べます。", copyLink: "この盤へのリンクをコピー", badSettings: "地雷を置けるマス数の盤を選んでください。マス数の上限は2,400です。端がつながる盤では長方形を使います。", badDay: "実在する日付をYYYY-MM-DD形式で入力するか、today または off を指定してください。UTCの日付を使います。" },
+};
+const row = (id, kind, en, ja, extra = {}) => ({ id, kind, group: "board", names: { board: id, mount: ({ lang: "language" }[id] ?? id) }, say: { en: { label: en[0], help: en[1] }, ja: { label: ja[0], help: ja[1] } }, ...extra });
+const options = [
+ row("cols", "number", ["Columns", "Cells across the field."], ["列数", "盤の横のマス数です。"], { default: 9, range: { min: 3, max: 60, step: 1 } }),
+ row("rows", "number", ["Rows", "Cells down the field."], ["行数", "盤の縦のマス数です。"], { default: 9, range: { min: 3, max: 60, step: 1 } }),
+ row("mines", "number", ["Mines", "Fewer than the active cells."], ["地雷の数", "使うマス数より少なくします。"], { default: 10, range: { min: 1, max: 500, step: 1 } }),
+ row("seed", "number", ["Seed", "The same seed and first opened cell give the same field."], ["シード", "同じシードで同じマスを最初に開くと、同じ盤になります。"], { default: 1, range: { min: 0, max: 4294967295, step: 1 } }),
+ row("grid", "choice", ["Grid", "Neighbour rules and joined edges."], ["マスのつながり", "隣のマスの数え方と端のつながりです。"], { default: "square", choices: ["square", "orthogonal", "hex", "wrap"], choiceLabels: { ja: { square: "四角", orthogonal: "上下左右", hex: "六角", wrap: "端がつながる" } } }),
+ row("shape", "choice", ["Shape", "The outline of the field."], ["形", "盤の外形です。"], { default: "rectangle", choices: ["rectangle", "heart", "star", "hexagon"], choiceLabels: { ja: { rectangle: "長方形", heart: "ハート", star: "星", hexagon: "六角形" } } }),
+ row("no-guess", "boolean", ["No guessing", "Verify that deductions solve the dealt field."], ["推測なし", "論理で解ける盤かを確認します。"], { default: true }),
+ row("opening", "choice", ["Opening", "Keep the first cell safe, or its neighbours too."], ["最初のマス", "最初のマス、またはその周囲も安全にします。"], { default: "clear", choices: ["safe", "clear"], choiceLabels: { ja: { safe: "最初のマス", clear: "周囲も安全" } } }),
+ row("daily", "text", ["Daily", "A UTC date, today or off. The opening cell still affects the field."], ["日替わり", "UTCの日付、today、offです。最初に開くマスも盤に影響します。"]),
+ row("material", "choice", ["Board", "Ivory, wood or slate."], ["盤", "象牙色、木、石を選びます。"], { default: "ivory", choices: ["ivory", "wood", "slate"], choiceLabels: { ja: { ivory: "象牙色", wood: "木", slate: "石" } } }),
+ row("pieces", "choice", ["Mine marks", "Flags, stones or flowers."], ["地雷の印", "旗、石、花を選びます。"], { default: "flags", choices: ["flags", "stones", "flowers"], choiceLabels: { ja: { flags: "旗", stones: "石", flowers: "花" } } }),
+ row("controls", "boolean", ["Controls", "Show controls, clock and instructions."], ["操作ボタン", "操作ボタン、時計、遊び方を表示します。"], { default: true }),
+ row("size", "choice", ["Display size", "Small, medium or large."], ["表示の大きさ", "小・中・大を選びます。"], { default: "medium", choices: ["small", "medium", "large"] }),
+ row("width", "number", ["Width", "Pixels, fitting a narrower parent."], ["幅", "ピクセルで指定します。狭い表示枠にも収まります。"], { range: { min: 200, max: 1000, step: 10 } }),
+ row("theme", "choice", ["Theme", "Light, dark or the device's preference."], ["配色", "明るい配色・暗い配色、または端末の設定に合わせます。"], { default: "auto", choices: ["auto", "light", "dark"] }),
+ row("lang", "choice", ["Language", "Controls and spoken cells."], ["読み上げる言語", "操作ボタンとマスの読み上げに使います。"], { choices: ["en", "ja"] }),
+ row("label", "text", ["Spoken label", "An optional screen-reader label."], ["読み上げる名前", "スクリーンリーダー用の名前です。指定は任意です。"]),
+];
+const leftOut = { "board.height": "Legacy cell-height alias; use rows.", "board.progress": "Saved play belongs to trusted host code, not a shared setup link.", "mount.settings": "The cols, rows, mines, seed, grid, shape, opening and no-guess fields compose settings.", "mount.progress": "Saved play belongs to host options.", "mount.hint": "The mounted board owns its live hint marker." };
+for (const name of ["onChange", "onFinish", "onError"]) leftOut[`mount.${name}`] = "Host callbacks belong to options; native events carry the same detail.";
+let mounted; const page = globalThis.familyLanguage({ id: "jirai", words, onChange: () => mounted?.draw() });
+function problem(settings) { try { embedDay(settings.daily); } catch { return "badDay"; } return validSettings({ ...DEFAULT_SETTINGS, width: Number(settings.cols ?? 9), height: Number(settings.rows ?? 9), mines: Number(settings.mines ?? 10), seed: Number(settings.seed ?? 1), grid: settings.grid ?? "square", shape: settings.shape ?? "rectangle", noGuess: settings["no-guess"] ?? true, opening: settings.opening ?? "clear" }) ? null : "badSettings"; }
+const heights = {}; const key = settings => JSON.stringify(settings);
+const builder = familyEmbedBuilder({ id: "jirai", packageName: "@johnmorrisdotca/jirai", major: VERSION.split(".")[0], site: "https://johnmorrisdotca.github.io/jirai/", title: "Jirai · Minesweeper", titleJa: "地雷の埋め込み", options, leftOut, groups: { board: { en: "The field", ja: "盤の設定" } }, makers: { board: { names: "board", element: "board", tag: "jirai-board", embed: "embed/", required: ["cols", "rows", "size"], description: "makerBoardSays", formats: ["element", "iframe", "module", "react", "vue", "svelte", "angular", "html", "url"], width: 640, height: settings => heights[key(settings)] ?? 1200 } }, code: ({ maker, format, settings }) => { if (problem(settings) !== null) return null; if ((format === "iframe" || format === "url") && settings.lang === undefined) return builder.codeFor(maker, format, options, { ...settings, lang: page.lang }); return undefined; } });
+builder.validateCoverage({ board: JiraiElement.observedAttributes, mount: JIRAI_EMBED_OPTION_KEYS });
+mounted = builder.mount({ words, language: () => page, initial: { board: { cols: 9, rows: 9, size: "medium", lang: page.lang } }, renderPreview: ({ stage, attrs, settings, note, say }) => { if (problem(settings) !== null) { note.textContent = say(problem(settings)); return { destroy() {} }; } const board = globalThis.document.createElement("jirai-board"); for (const [name, value] of attrs) board.setAttribute(name, value); board.addEventListener("jirai-load", () => { heights[key(settings)] = Math.max(900, Math.ceil(board.getBoundingClientRect().height) + 260); mounted?.refreshCode(); }); stage.append(board); return { destroy() { board.remove(); } }; } });

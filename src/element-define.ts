@@ -1,2 +1,3 @@
-import { defineJirai } from "./element.ts";
-if (typeof customElements !== "undefined") defineJirai();
+import { defineBoard } from "./element.ts";
+defineBoard();
+export * from "./element.ts";

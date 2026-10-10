@@ -4,7 +4,7 @@ import { resolve, extname } from "node:path";
 const root = resolve("site");
 const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json" };
 createServer(async (req, res) => {
-  const path = resolve(root, "." + new URL(req.url, "http://localhost").pathname);
+  const path = resolve(root, "." + new URL(req.url, "http://localhost").pathname.replace(/\/$/, "/index.html"));
   if (path !== root && !path.startsWith(root + "/")) { res.writeHead(403); res.end(); return; }
   try { const file = path === root ? root + "/index.html" : path; res.setHeader("Content-Type", types[extname(file)] ?? "application/octet-stream"); res.end(await readFile(file)); }
   catch { res.writeHead(404); res.end("Not found"); }
