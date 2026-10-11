@@ -14,6 +14,15 @@ import type { DrawOptions, JiraiMount, MountOptions } from "./ui.types.ts";
  * One playable board in any element. The engine owns the rules, this module
  * owns presses, focus, the clock and the worker. Destroy removes only its own
  * root, so two mounted boards never take each other's listeners or children.
+ * @param host - The HTMLElement that owns the native interface.
+ * @param options - Native settings and callbacks for this mounted interface.
+ * @returns The native mounted handle, including controls and destroy() cleanup.
+ * @example
+ * ```ts
+ * import { mountJirai } from "@johnmorrisdotca/jirai/play";
+ * const show = (host: HTMLElement, options: Parameters<typeof mountJirai>[1]) => mountJirai(host, options);
+ * console.log(typeof show); // function
+ * ```
  */
 export function mountJirai(host: HTMLElement, options: MountOptions = {}): JiraiMount {
   const doc = host.ownerDocument;

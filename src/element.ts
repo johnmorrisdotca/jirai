@@ -6,11 +6,30 @@ import type { Game, Grid, Language, Material, Pieces, Settings } from "./jirai.t
 import type { JiraiMount, MountOptions } from "./ui.types.ts";
 const ElementBase = typeof HTMLElement === "undefined" ? class {} as typeof HTMLElement : HTMLElement;
 const isOn = (value: string | null, fallback = true): boolean => value === null ? fallback : !["off", "false", "no", "0"].includes(value.trim().toLowerCase());
-/** The real mounted options, checked by TypeScript and the builder. */
+/** The real mounted options, checked by TypeScript and the builder.
+ * @example
+ * ```ts
+ * import { JIRAI_EMBED_OPTION_KEYS } from "@johnmorrisdotca/jirai/element";
+ * console.log(typeof JIRAI_EMBED_OPTION_KEYS); // object
+ * ```
+ */
 export const JIRAI_EMBED_OPTION_KEYS = Object.keys({ settings: true, progress: true, controls: true, material: true, pieces: true, language: true, hint: true, onChange: true, onFinish: true, onError: true } satisfies Record<keyof MountOptions, boolean>);
-/** Host settings, saved play and callbacks; visual attributes override settings. */
+/** Host settings, saved play and callbacks; visual attributes override settings.
+ * @example
+ * ```ts
+ * import type { JiraiElementOptions } from "@johnmorrisdotca/jirai/element";
+ * const options: JiraiElementOptions = {};
+ * console.log(Object.keys(options).length); // 0
+ * ```
+ */
 export type JiraiElementOptions = Pick<MountOptions, "settings" | "progress" | "hint" | "onChange" | "onFinish" | "onError">;
-/** A Minesweeper board with reflected settings, UTC daily play and native events. */
+/** A Minesweeper board with reflected settings, UTC daily play and native events.
+ * @example
+ * ```ts
+ * import { JiraiElement } from "@johnmorrisdotca/jirai/element";
+ * console.log(JiraiElement.observedAttributes.includes("lang")); // true
+ * ```
+ */
 export class JiraiElement extends ElementBase {
   #mounted: JiraiMount | null = null;
   #key = "";
@@ -134,10 +153,29 @@ export class JiraiElement extends ElementBase {
     }
   }
 }
-/** Registers the default board, or a subclass under a host's custom tag. Server-safe and idempotent. */
+/** Registers the default board, or a subclass under a host's custom tag. Server-safe and idempotent.
+ * @param tagName - The custom tag name; omitted to use the package default.
+ * @param registry - The custom-element registry; omitted outside a browser.
+ * @returns Nothing; existing definitions and server imports remain safe.
+ * @example
+ * ```ts
+ * import { defineBoard } from "@johnmorrisdotca/jirai/element";
+ * defineBoard();
+ * console.log(typeof defineBoard); // function
+ * ```
+ */
 export function defineBoard(tagName = "jirai-board", registry: CustomElementRegistry | undefined = typeof customElements === "undefined" ? undefined : customElements): void {
   if (registry === undefined || registry.get(tagName) !== undefined) return;
   registry.define(tagName, tagName === "jirai-board" ? JiraiElement : class extends JiraiElement {});
 }
-/** Registers the compatible default tag in a registry. */
+/** Registers the compatible default tag in a registry.
+ * @param registry - The custom-element registry; omitted outside a browser.
+ * @returns Nothing; existing definitions and server imports remain safe.
+ * @example
+ * ```ts
+ * import { defineJirai } from "@johnmorrisdotca/jirai/element";
+ * defineJirai();
+ * console.log(typeof defineJirai); // function
+ * ```
+ */
 export function defineJirai(registry: CustomElementRegistry | undefined = typeof customElements === "undefined" ? undefined : customElements): void { defineBoard("jirai-board", registry); }
