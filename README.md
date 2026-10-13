@@ -1,4 +1,4 @@
-<h1 align="center">Jirai <sub>地雷</sub></h1>
+<h1 align="center">Jirai <sub>地雷</sub> — Minesweeper with no-guess boards</h1>
 
 <p align="center"><strong>Every number is a clue.</strong><br>
 Minesweeper across four-neighbour, eight-neighbour, hexagonal and wraparound grids. Choose a shape, lay a seeded field, and clear it with deductions you can trust.</p>
@@ -9,9 +9,11 @@ Minesweeper across four-neighbour, eight-neighbour, hexagonal and wraparound gri
   <a href="./LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-2f5d4a"></a>
   <img alt="No runtime dependencies" src="https://img.shields.io/badge/runtime%20dependencies-0-2f5d4a">
   <img alt="TypeScript" src="https://img.shields.io/badge/types-TypeScript-3178c6">
+  <a href="https://johnmorrisdotca.github.io/jirai/docs/api/main/index.html"><img alt="7.8 kB minified and gzipped" src="https://img.shields.io/badge/min%2Bgzip-7.8%20kB-2f5d4a"></a>
+  <a href="https://www.npmjs.com/package/@johnmorrisdotca/jirai#provenance"><img alt="Published with npm provenance" src="https://img.shields.io/badge/npm-provenance-2f5d4a"></a>
 </p>
 
-<p align="center"><a href="https://johnmorrisdotca.github.io/jirai/"><strong>Play Jirai →</strong></a> · <a href="https://johnmorrisdotca.github.io/jirai/api.html">API reference</a></p>
+<p align="center"><a href="https://johnmorrisdotca.github.io/jirai/"><strong>Play Jirai →</strong></a> · <a href="https://johnmorrisdotca.github.io/jirai/docs/">Documentation</a> · <a href="https://johnmorrisdotca.github.io/jirai/docs/guides/getting-started.html">Getting started</a> · <a href="https://johnmorrisdotca.github.io/jirai/api.html">API reference</a></p>
 
 <table align="center">
 <tr>
@@ -148,6 +150,17 @@ Each picture is the real player, drawn by the package and taken from [the demo](
 </table>
 
 ## Use it in your project
+
+### Install under another name
+
+```sh
+npm install minesweeper@npm:@johnmorrisdotca/jirai
+```
+
+```ts no-check
+import { newGame } from "minesweeper";
+console.log(newGame({width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"safe",seed:42}).status);
+```
 
 ### Install
 
@@ -568,6 +581,8 @@ The full engine entry is `@johnmorrisdotca/jirai`; four-neighbour helpers are in
 
 ## API
 
+The [documentation](https://johnmorrisdotca.github.io/jirai/docs/) provides paired guides, local search and checked examples. The [API index](https://johnmorrisdotca.github.io/jirai/api.html) retains export anchors.
+
 Every export of every entry point is in the [API reference](https://johnmorrisdotca.github.io/jirai/api.html), made from the source when the demo is built, and the [API guide](docs/API.md) lists the entries and public calls in prose.
 
 ### Entry points
@@ -658,38 +673,7 @@ The engine, the dealer, the hints and the player are in. Nothing else is promise
 
 ## Architecture
 
-```text
-src/
-├── deduce.ts
-├── draw-entry.ts
-├── draw.ts
-├── element-define.ts
-├── element.ts
-├── enumerate.ts
-├── flood.ts
-├── game.ts
-├── generate.ts
-├── grid.ts
-├── index.ts
-├── jirai.constants.ts
-├── jirai.types.ts
-├── keep.ts
-├── levels.ts
-├── measure.ts
-├── mount.ts
-├── orthogonal.ts
-├── play-entry.ts
-├── random.ts
-├── react.tsx
-├── react.types.ts
-├── repair.ts
-├── shape.ts
-├── solve.ts
-├── strings.ts
-├── style.ts
-├── ui.types.ts
-└── worker.ts
-```
+The rules, bounded generation, deductions and browser adapters are explained in the [architecture guide](docs/guides/architecture.md), with the complete original source tree preserved there.
 
 ## The name
 
@@ -770,13 +754,15 @@ Jirai is one of twenty-eight packages, each made for the same site, each at
 pnpm install --frozen-lockfile
 pnpm check          # lint, types, tests and the presentation checks
 pnpm test:package   # build and import the actual npm tarball
+pnpm docs:check       # typecheck and run API and guide examples
+pnpm docs:site        # build the documentation and its local search
 pnpm test:demo      # browser flows against the built page
 pnpm site           # build the standalone page into site/
 pnpm test:readme    # run every example in this README against the built package
 pnpm screenshots:readme  # take the README's pictures from the built demo, in light and dark
 ```
 
-The standalone game is `site/index.html`. The preview binds to `127.0.0.1:6713`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
+The standalone game is `site/index.html`. The preview binds to `127.0.0.1:6902`; see [CONTRIBUTING.md](CONTRIBUTING.md) before changing the engine or player.
 
 ## Contributing
 

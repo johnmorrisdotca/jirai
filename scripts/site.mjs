@@ -13,12 +13,12 @@ await cp("LICENSE", "site/LICENSE");
 const page = (await readFile("demo/index.html", "utf8"))
   .replace("<!--family-head-->", familyHead({
     id,
-    title: "Jirai · Minesweeper with no guessing",
+    title: "Jirai 地雷 — Minesweeper with no-guess boards",
     description: "Minesweeper in squares, hexagons, or on a board whose edges join. Seeded, configurable, and playable without guessing. Free and open source, in English and Japanese.",
-    ogTitle: "Jirai Minesweeper",
+    ogTitle: "Jirai 地雷 — Minesweeper with no-guess boards",
     ogDescription: "Minesweeper on shaped, hexagonal and wraparound boards, with verified no-guess fields.",
   }))
-  .replace("<!--family-header-->", familyHeader({ id, links: [{ href: "api.html", say: "pageApi" }] }))
+  .replace("<!--family-header-->", familyHeader({ id, links: [{ href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }))
   .replace("<!--family-unreviewed-->", familyUnreviewed({ id }))
   .replace("<!--family-footer-->", familyFooter({ id }))
   .replace("<!--family-script-->", `<script>${FAMILY_SCRIPT}</script>`);
@@ -28,5 +28,5 @@ await writeFile("site/api.html", apiPage({ id, name: "Jirai", icon }));
 console.log("The standalone game is in site/. Serve it over HTTP to play.");
 
 await writeFile("site/family-embed-builder.js", `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`);
-const builderParts = { builderHead: familyHead({ id, title: "Jirai · build a Minesweeper embed", description: "Choose a minefield, preview it and copy its embed code." }), builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }] }), unreviewed: familyUnreviewed({ id }), footer: familyFooter({ id }), script: `<script>${FAMILY_SCRIPT}</script>` };
+const builderParts = { builderHead: familyHead({ id, title: "Jirai 地雷 — Minesweeper with no-guess boards", description: "Choose a minefield, preview it and copy its embed code." }), builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }, { href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }), unreviewed: familyUnreviewed({ id }), footer: familyFooter({ id }), script: `<script>${FAMILY_SCRIPT}</script>` };
 await writeFile("site/builder.html", (await readFile("demo/builder.html", "utf8")).replace(/<!-- family:([A-Za-z]+) -->/g, (_match, key) => builderParts[key]));

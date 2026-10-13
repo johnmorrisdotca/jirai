@@ -6,3 +6,4 @@ playwright-report/
 *.tgz
 .DS_Store
 .readme-examples/
+.docs-examples/

@@ -8,4 +8,4 @@ createServer(async (req, res) => {
   if (path !== root && !path.startsWith(root + "/")) { res.writeHead(403); res.end(); return; }
   try { const file = path === root ? root + "/index.html" : path; res.setHeader("Content-Type", types[extname(file)] ?? "application/octet-stream"); res.end(await readFile(file)); }
   catch { res.writeHead(404); res.end("Not found"); }
-}).listen(Number(process.env.PORT ?? 6713), "127.0.0.1", () => console.log("Jirai is ready on localhost:" + (process.env.PORT ?? 6713)));
+}).listen(Number(process.env.PORT ?? 6902), "127.0.0.1", () => console.log("Jirai is ready on localhost:" + (process.env.PORT ?? 6902)));

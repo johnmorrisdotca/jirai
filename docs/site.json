@@ -1,0 +1,42 @@
+{
+  "job": "Minesweeper with no-guess boards",
+  "pitch": {
+    "en": "Deal seeded minefields, prove hints from visible clues and mount square, orthogonal, hexagonal or wraparound boards.",
+    "ja": "シード付きの地雷の盤を作り、見える数字からヒントを証明し、四角・四近傍・六角・端がつながる盤で遊べます。"
+  },
+  "name": {
+    "en": "Jirai is the Japanese word 地雷 for a land mine.",
+    "ja": "「地雷」は、地面に埋められた爆弾のことです。"
+  },
+  "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f5d4a'/%3E%3Ctext x='50' y='70' font-size='42' text-anchor='middle' fill='%23f3efe4'%3E地雷%3C/text%3E%3C/svg%3E",
+  "entries": {
+    ".": {
+      "en": "Rules, generation and deductions",
+      "ja": "規則・生成・推論"
+    },
+    "./orthogonal": {
+      "en": "Four-neighbour rules",
+      "ja": "四近傍の規則"
+    },
+    "./draw": {
+      "en": "Visible board models",
+      "ja": "表示用の盤モデル"
+    },
+    "./play": {
+      "en": "Native Minesweeper player",
+      "ja": "標準の地雷パズル"
+    },
+    "./element": {
+      "en": "Minesweeper element",
+      "ja": "地雷パズルの要素"
+    },
+    "./element/define": {
+      "en": "Register Minesweeper",
+      "ja": "地雷パズルを登録する"
+    },
+    "./react": {
+      "en": "React player",
+      "ja": "Reactの表示"
+    }
+  }
+}
