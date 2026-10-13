@@ -1,7 +1,28 @@
 import type { Settings } from "./jirai.types.ts";
-/** Board silhouettes supported by settings. */
+/** Board silhouettes supported by settings.
+ *
+ * @example
+ * ```ts
+ * import { SHAPES } from "@johnmorrisdotca/jirai";
+ *
+ * console.log(SHAPES);
+ * ```
+ */
 export const SHAPES = ["rectangle", "heart", "star", "hexagon"] as const;
-/** Row-major addresses stay stable; omitted cells have no clue and no neighbours. */
+/** Row-major addresses stay stable; omitted cells have no clue and no neighbours.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @param cell - An active native cell index in row-major board order.
+ * @returns Row-major addresses stay stable; omitted cells have no clue and no neighbours.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { activeCell } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(activeCell(settings,0));
+ * ```
+ */
 export function activeCell(settings: Settings, cell: number): boolean {
   if (!Number.isInteger(cell) || cell < 0 || cell >= settings.width * settings.height) return false;
   const col = cell % settings.width, row = Math.floor(cell / settings.width);
@@ -28,7 +49,19 @@ export function activeCell(settings: Settings, cell: number): boolean {
     default: return true;
   }
 }
-/** Returns all active cells in stable row-major order. */
+/** Returns all active cells in stable row-major order.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @returns Returns all active cells in stable row-major order.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { activeCells } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(activeCells(settings));
+ * ```
+ */
 export function activeCells(settings: Settings): number[] {
   return Array.from({ length: settings.width * settings.height }, (_, cell) => cell).filter(cell => activeCell(settings, cell));
 }

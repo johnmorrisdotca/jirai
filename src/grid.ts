@@ -2,7 +2,19 @@ import { GRID_SPECS, MAX_CELLS, MAX_SIDE } from "./jirai.constants.ts";
 import { activeCell, activeCells, SHAPES } from "./shape.ts";
 import type { Settings } from "./jirai.types.ts";
 
-/** Reject a setting before it reaches a board allocation or a shuffle. */
+/** Reject a setting before it reaches a board allocation or a shuffle.
+ *
+ * @param value - The candidate field settings to validate.
+ * @returns Reject a setting before it reaches a board allocation or a shuffle.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { validSettings } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(validSettings(settings));
+ * ```
+ */
 export function validSettings(value: unknown): value is Settings {
   if (value === null || typeof value !== "object") return false;
   const s = value as Settings;
@@ -17,11 +29,37 @@ export function validSettings(value: unknown): value is Settings {
     && (s.opening === "safe" || s.opening === "clear")
     && Number.isInteger(s.seed) && s.seed >= 0 && s.seed <= 0xffffffff;
 }
-/** Reports whether a row-major cell is inside the board's active shape. */
+/** Reports whether a row-major cell is inside the board's active shape.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @param cell - An active native cell index in row-major board order.
+ * @returns Reports whether a row-major cell is inside the board's active shape.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { validCell } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(validCell(settings,8));
+ * ```
+ */
 export function validCell(settings: Settings, cell: number): boolean {
   return Number.isInteger(cell) && cell >= 0 && cell < settings.width * settings.height && activeCell(settings, cell);
 }
-/** Every neighbour once. Wrap joins both pairs of opposite edges. */
+/** Every neighbour once. Wrap joins both pairs of opposite edges.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @param cell - An active native cell index in row-major board order.
+ * @returns Every neighbour once. Wrap joins both pairs of opposite edges.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { neighbours } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(neighbours(settings,0));
+ * ```
+ */
 export function neighbours(settings: Settings, cell: number): number[] {
   if (!validCell(settings, cell)) return [];
   const spec = GRID_SPECS[settings.grid];
@@ -38,7 +76,19 @@ export function neighbours(settings: Settings, cell: number): number[] {
   }
   return [...out].sort((a, b) => a - b);
 }
-/** Precomputes the neighbour list for each row-major cell. */
+/** Precomputes the neighbour list for each row-major cell.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @returns Precomputes the neighbour list for each row-major cell.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { neighboursOf } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(neighboursOf(settings));
+ * ```
+ */
 export function neighboursOf(settings: Settings): number[][] {
   return Array.from({ length: settings.width * settings.height }, (_, cell) => neighbours(settings, cell));
 }

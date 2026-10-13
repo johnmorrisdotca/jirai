@@ -4,7 +4,22 @@ import { words } from "./strings.ts";
 import type { Game } from "./jirai.types.ts";
 import type { BoardModel, DrawOptions } from "./ui.types.ts";
 
-/** Where the cells sit, and what may be shown. The drawing never exposes a covered clue. */
+/** Where the cells sit, and what may be shown. The drawing never exposes a covered clue.
+ *
+ * @param game - The native game, or answer-free VisibleGame required by the signature.
+ * @param options - The generation budgets/options, or React-owned native settings and host callbacks specified by this signature.
+ * @returns Where the cells sit, and what may be shown. The drawing never exposes a covered clue.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { newGame, play } from "@johnmorrisdotca/jirai";
+ * import { boardModel } from "@johnmorrisdotca/jirai/draw";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const game=play(newGame(settings),{kind:"reveal",cell:0});
+ * console.log(boardModel(game,{language:"ja",material:"wood"}).cells.length);
+ * ```
+ */
 export function boardModel(game: Game, options: DrawOptions = {}): BoardModel {
   const hex = game.settings.grid === GRIDS.hex;
   const ended = game.status === STATUSES.lost || game.status === STATUSES.won;

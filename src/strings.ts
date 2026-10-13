@@ -1,5 +1,17 @@
 import type { Language } from "./jirai.types.ts";
-/** Built-in English and Japanese strings used by the player and renderer. */
+/** Built-in English and Japanese strings used by the player and renderer.
+ *
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { makeBoard } from "@johnmorrisdotca/jirai";
+ * import { STRINGS } from "@johnmorrisdotca/jirai/play";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const board=makeBoard(settings,0,{attempts:1,repair:false});
+ * console.log(STRINGS.ja.board);
+ * ```
+ */
 export const STRINGS = {
   en: {
     board: "Minesweeper board", covered: "covered", flag: "flagged", question: "uncertain", empty: "empty", mine: "mine", wrong: "incorrect flag",

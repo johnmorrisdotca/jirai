@@ -6,12 +6,37 @@ import { seededRandom, shuffled } from "./random.ts";
 import { Solver } from "./solve.ts";
 import type { Board, GenerationOptions, Settings } from "./jirai.types.ts";
 
-/** A bounded generator must say it failed, never quietly return a guessing board. */
+/** A bounded generator must say it failed, never quietly return a guessing board.
+ *
+ * @param code - settings for invalid input, opening for an impossible safe opening, or exhausted for a spent generation budget.
+ * @param message - The readable reason for generation failure.
+ * @example
+ * ```ts
+ * import { GenerationError } from "@johnmorrisdotca/jirai";
+ *
+ * const error=new GenerationError("exhausted","No proved field within this budget");
+ * console.log(error.code,error.message);
+ * ```
+ */
 export class GenerationError extends Error {
   constructor(public readonly code: "settings" | "opening" | "exhausted", message: string) { super(message); this.name = "GenerationError"; }
 }
 
-/** Verify a board from one opening, using only clues that have been uncovered. */
+/** Verify a board from one opening, using only clues that have been uncovered.
+ *
+ * @param board - The dealt native field; it includes private answer data.
+ * @param enumerate - Whether to include bounded exact frontier enumeration in the deduction/proof check.
+ * @returns Verify a board from one opening, using only clues that have been uncovered.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { isSolvable, makeBoard } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const board=makeBoard(settings,0,{attempts:1,repair:false});
+ * console.log(isSolvable(board));
+ * ```
+ */
 export function isSolvable(board: Board, enumerate = true): boolean {
   const solver = new Solver(board.settings);
   return solver.run(Int8Array.from(board.clues), board.first, enumerate).solved;
@@ -26,6 +51,19 @@ const REPAIRS_PER_CELL = 12;
  * A no-guess deal first draws random layouts, as 0.1 and 0.2 did, so every board those versions dealt is still dealt.
  * If none of them can be finished by deduction it takes the closest and repairs it: single mines are moved near the
  * place the solver stopped until the solver finishes the whole field. The result is proved the same way either route.
+ *
+ * @param settings - The validated native field dimensions, mine count, topology, shape, opening, generation policy and numeric seed.
+ * @param first - The native active-cell index of the opening, from which generation and proof begin.
+ * @param options - The generation budgets/options, or React-owned native settings and host callbacks specified by this signature.
+ * @returns Deal after the first reveal. A seed fixes the whole candidate stream and the accepted board.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { makeBoard } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * console.log(makeBoard(settings,0,{attempts:1,repair:false}).first);
+ * ```
  */
 export function makeBoard(settings: Settings, first: number, options: GenerationOptions = {}): Board {
   if (!validSettings(settings) || !validCell(settings, first)) throw new GenerationError("settings", "Invalid board settings or opening cell.");

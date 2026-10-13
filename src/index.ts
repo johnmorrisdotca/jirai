@@ -1,4 +1,5 @@
 /** Jirai 地雷: the rules and deductions, plain functions over plain data. No DOM and no dependencies. */
+
 export * from "./jirai.types.ts";
 export * from "./jirai.constants.ts";
 export * from "./grid.ts";
@@ -7,7 +8,15 @@ export * from "./game.ts";
 export * from "./deduce.ts";
 export * from "./keep.ts";
 export { seededRandom } from "./random.ts";
-/** Package version, kept in step with the release metadata. */
+/** Package version, kept in step with the release metadata.
+ *
+ * @example
+ * ```ts
+ * import { VERSION } from "@johnmorrisdotca/jirai";
+ *
+ * console.log(VERSION);
+ * ```
+ */
 export const VERSION = "0.4.2";
 
 export { SHAPES, activeCell, activeCells } from "./shape.ts";

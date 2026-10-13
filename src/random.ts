@@ -1,4 +1,14 @@
-/** Mulberry32, pinned by the replay tests: changing it would change every kept board. */
+/** Mulberry32, pinned by the replay tests: changing it would change every kept board.
+ *
+ * @param seed - A reproducible numeric seed.
+ * @returns Mulberry32, pinned by the replay tests: changing it would change every kept board.
+ * @example
+ * ```ts
+ * import { seededRandom } from "@johnmorrisdotca/jirai";
+ *
+ * console.log(seededRandom(42)());
+ * ```
+ */
 export function seededRandom(seed: number): () => number {
   let state = seed >>> 0;
   return () => {

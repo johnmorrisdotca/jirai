@@ -1,4 +1,12 @@
-/** Scoped to one mounted board. Its host supplies the font and may override every colour. */
+/** Scoped to one mounted board. Its host supplies the font and may override every colour.
+ *
+ * @example
+ * ```ts
+ * import { JIRAI_STYLE } from "@johnmorrisdotca/jirai/draw";
+ *
+ * console.log(JIRAI_STYLE.length);
+ * ```
+ */
 export const JIRAI_STYLE = `
 .jr-root{--jr-ground:#a98954;--jr-cover:#fbf8f1;--jr-open:#efe8d8;--jr-line:#cfc6b2;--jr-ink:#1f2320;--jr-accent:#2f7a4f;color:var(--jr-ui-ink,var(--jr-ink));font:inherit;position:relative}
 .jr-root[data-material=wood]{--jr-ground:#ae804a;--jr-cover:#e0bb7e;--jr-open:#c69d63;--jr-line:#936e40;--jr-ink:#352c20;background-image:repeating-linear-gradient(4deg,transparent 0 8px,#4b2b0c08 9px 10px)}

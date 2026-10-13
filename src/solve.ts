@@ -3,9 +3,27 @@ import { neighboursOf } from "./grid.ts";
 import { activeCell } from "./shape.ts";
 import type { Constraint, Settings } from "./jirai.types.ts";
 
-/** Why a cell was proved: one clue, two overlapping clues, the mine counter, or every arrangement of a small frontier. */
+/** Why a cell was proved: one clue, two overlapping clues, the mine counter, or every arrangement of a small frontier.
+ *
+ * @example
+ * ```ts
+ * import type { ProofKind } from "@johnmorrisdotca/jirai";
+ *
+ * const value: ProofKind = "count";
+ * console.log(value);
+ * ```
+ */
 export type ProofKind = "count" | "overlap" | "total" | "enumeration";
-/** Cells proved by each kind of reasoning. */
+/** Cells proved by each kind of reasoning.
+ *
+ * @example
+ * ```ts
+ * import type { ProofTally } from "@johnmorrisdotca/jirai";
+ *
+ * const value: ProofTally = {count:0,overlap:0,total:0,enumeration:0};
+ * console.log(value);
+ * ```
+ */
 export type ProofTally = Record<ProofKind, number>;
 /** What a run of the deduction solver found. */
 export type SolveReport = {

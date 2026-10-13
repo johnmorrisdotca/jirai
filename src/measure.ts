@@ -2,7 +2,19 @@ import { Solver } from "./solve.ts";
 import type { ProofTally } from "./solve.ts";
 import type { Board } from "./jirai.types.ts";
 
-/** How demanding a dealt board is to solve by deduction, measured by solving it. */
+/** How demanding a dealt board is to solve by deduction, measured by solving it.
+ *
+ * @example
+ * ```ts
+ * import type { Measure, Settings } from "@johnmorrisdotca/jirai";
+ * import { makeBoard, measureBoard } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const board=makeBoard(settings,0,{attempts:1,repair:false});
+ * const value: Measure = measureBoard(board);
+ * console.log(value);
+ * ```
+ */
 export type Measure = {
   /** Mines per playable cell. */
   density: number;
@@ -27,6 +39,18 @@ export type Measure = {
  * `100 × density + 100 × multiStep + depth ÷ 4`, so it rises with the crowding of the mines, with the share of the
  * field that needs more than a single clue, and with how long the longest chain of reasoning runs. It is a way to
  * put boards in order, not a rating of how long a person will take.
+ *
+ * @param board - The dealt native field; it includes private answer data.
+ * @returns Solve a dealt board from its opening and report what it took. The score is `100 × density + 100 × multiStep + depth ÷ 4`, so it rises with the crowding of the mines, with the share of the field that needs more than a single clue, and with how long the longest chain of reasoning runs. It is a way to put boards in order, not a rating of how long a person will take.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { makeBoard, measureBoard } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const board=makeBoard(settings,0,{attempts:1,repair:false});
+ * console.log(measureBoard(board));
+ * ```
  */
 export function measureBoard(board: Board): Measure {
   const solver = new Solver(board.settings);

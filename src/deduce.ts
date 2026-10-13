@@ -5,6 +5,21 @@ import type { Constraint, Deduction, VisibleGame } from "./jirai.types.ts";
 /**
  * What the clues prove, without reading the answer or trusting a player's
  * flags. A flag is a note; treating it as evidence makes a bad note a bad hint.
+ *
+ * @param game - The native game, or answer-free VisibleGame required by the signature.
+ * @param knownMines - Previously proved mine indices, rather than untrusted player flags.
+ * @param enumerate - Whether to include bounded exact frontier enumeration in the deduction/proof check.
+ * @param adjacent - Optional native neighbour lists matching the field’s topology and active cells.
+ * @returns What the clues prove, without reading the answer or trusting a player's flags. A flag is a note; treating it as evidence makes a bad note a bad hint.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { deduce, newGame, play, visibleGame } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const game=play(newGame(settings),{kind:"reveal",cell:0});
+ * console.log(deduce(visibleGame(game)));
+ * ```
  */
 export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new Set(), enumerate = true, adjacent: readonly (readonly number[])[] = neighboursOf(game.settings)): Deduction {
   const constraints: Constraint[] = [];
@@ -56,7 +71,20 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
   return enumerate ? enumerateForced(constraints) : empty;
 }
 
-/** Keep discovering certain mines until there is a safe cell or nothing more is proved. */
+/** Keep discovering certain mines until there is a safe cell or nothing more is proved.
+ *
+ * @param game - The native game, or answer-free VisibleGame required by the signature.
+ * @returns Keep discovering certain mines until there is a safe cell or nothing more is proved.
+ * @example
+ * ```ts
+ * import type { Settings } from "@johnmorrisdotca/jirai";
+ * import { hintFor, newGame, play, visibleGame } from "@johnmorrisdotca/jirai";
+ *
+ * const settings: Settings={width:3,height:3,mines:1,grid:"square",noGuess:false,opening:"clear",seed:42};
+ * const game=play(newGame(settings),{kind:"reveal",cell:0});
+ * console.log(hintFor(visibleGame(game)));
+ * ```
+ */
 export function hintFor(game: VisibleGame): Deduction {
   const known = new Set<number>();
   const adjacent = neighboursOf(game.settings);
