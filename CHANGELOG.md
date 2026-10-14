@@ -6,6 +6,8 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+- Keep complete resource catalogues on the documentation entry index and the active resource beside core navigation; render valid default imports in HTML and Markdown.
+
 - Add the bilingual documentation site, checked public examples, paired guides, local search and machine-readable pages.
 
 - Add the shared embed builder, validated iframe route, reflected board settings, display sizes and UTC daily play. Preserve legacy cell dimensions, safe openings and mounted methods. Native events now bubble with JSON-safe error detail.
