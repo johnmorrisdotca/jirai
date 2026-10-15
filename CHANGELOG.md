@@ -18,6 +18,7 @@ The board is a custom element with the family's standard embed attributes and a 
 
 ### Changed
 
+- `pnpm check` builds the package before it type-checks, because the type-check reads the built `dist/element.js`; in a clean checkout, which is what the release workflow has, it failed without the build.
 - The API link in the header reads "API" in English, so that the header takes the same number of rows in English and in Japanese on a phone, as the demo's test of a language change asks.
 - Synchronize documentation tooling for repository layouts, generated type references, Node entry points and repository-specific README links.
 - Keep complete resource catalogues on the documentation entry index and the active resource beside core navigation; render valid default imports in HTML and Markdown.

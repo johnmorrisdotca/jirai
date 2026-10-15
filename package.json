@@ -109,7 +109,7 @@
     "typecheck": "tsc -p tsconfig.check.json",
     "lint": "eslint .",
     "test": "vitest run",
-    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm check:presentation",
+    "check": "pnpm lint && pnpm build && pnpm typecheck && pnpm test && pnpm check:presentation",
     "site": "pnpm build && node scripts/site.mjs",
     "test:demo": "pnpm site && node scripts/docs-site.mjs build && playwright test",
     "test:package": "pnpm build && node scripts/check-package.mjs",
