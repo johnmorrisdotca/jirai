@@ -1,6 +1,6 @@
 {
   "name": "@johnmorrisdotca/jirai",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "Jirai 地雷 — Minesweeper with no-guess boards: square, orthogonal, hexagonal and wraparound fields, seeded safe openings, bounded generation, explained hints and accessible English/Japanese play. Zero runtime dependencies.",
   "type": "module",
   "license": "MIT",

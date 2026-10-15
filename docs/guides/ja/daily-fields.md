@@ -13,7 +13,7 @@ const settings: Settings={width:3,height:3,mines:1,grid:"orthogonal",noGuess:fal
 console.log(settings.seed,newGame(settings).status);
 ```
 
-`dailySeed` は、実在する YYYY-MM-DD の日付を受け取り、その形式のシードを使います。端末の日付と UTC は、異なる場合があります。日付を固定すればその日を再現でき、埋め込みの `today` は読み込み時の UTC の日付に従います。異なる設定や開始位置を同じ盤にするものではありません。
+`dailySeed`は、実在するYYYY-MM-DDの日付を受け取り、その形式のシードを使います。端末の日付とUTCは、異なる場合があります。日付を固定すればその日を再現でき、埋め込みの`today`は読み込み時のUTCの日付に従います。異なる設定や開始位置を同じ盤にするものではありません。
 
 ## リンクに設定も保つ
 

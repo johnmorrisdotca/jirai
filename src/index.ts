@@ -17,7 +17,7 @@ export { seededRandom } from "./random.ts";
  * console.log(VERSION);
  * ```
  */
-export const VERSION = "0.4.2";
+export const VERSION = "0.5.0";
 
 export { SHAPES, activeCell, activeCells } from "./shape.ts";
 
