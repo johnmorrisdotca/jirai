@@ -8,7 +8,9 @@ import type { Constraint, Deduction } from "./jirai.types.ts";
 export function enumerateForced(constraints: readonly Constraint[]): Deduction {
   const empty: Deduction = { safe: [], mines: [], reason: "none", sources: [], contradiction: false };
   const remaining = new Set(constraints.flatMap((c) => [...c.cells]));
-  const safe: number[] = [], mines: number[] = [], sources = new Set<number>();
+  const safe: number[] = [],
+    mines: number[] = [],
+    sources = new Set<number>();
   while (remaining.size > 0) {
     const component = new Set<number>([remaining.values().next().value!]);
     let grew = true;
@@ -16,7 +18,11 @@ export function enumerateForced(constraints: readonly Constraint[]): Deduction {
       grew = false;
       for (const c of constraints) {
         if (!c.cells.some((cell) => component.has(cell))) continue;
-        for (const cell of c.cells) if (!component.has(cell)) { component.add(cell); grew = true; }
+        for (const cell of c.cells)
+          if (!component.has(cell)) {
+            component.add(cell);
+            grew = true;
+          }
       }
     }
     for (const cell of component) remaining.delete(cell);
@@ -25,13 +31,20 @@ export function enumerateForced(constraints: readonly Constraint[]): Deduction {
     const relevant = constraints.filter((c) => c.cells.some((cell) => component.has(cell)));
     const positions = relevant.map((c) => c.cells.map((cell) => cells.indexOf(cell)));
     const assigned = new Int8Array(cells.length).fill(-1);
-    const seenMine = new Uint8Array(cells.length), seenSafe = new Uint8Array(cells.length);
-    let nodes = 0, solutions = 0, stopped = false;
+    const seenMine = new Uint8Array(cells.length),
+      seenSafe = new Uint8Array(cells.length);
+    let nodes = 0,
+      solutions = 0,
+      stopped = false;
     function visit(at: number): void {
       nodes += 1;
-      if (nodes > ENUMERATION_NODES) { stopped = true; return; }
+      if (nodes > ENUMERATION_NODES) {
+        stopped = true;
+        return;
+      }
       for (let i = 0; i < relevant.length; i += 1) {
-        let filled = 0, unknown = 0;
+        let filled = 0,
+          unknown = 0;
         for (const p of positions[i]!) {
           if (assigned[p] === -1) unknown += 1;
           else filled += assigned[p]!;
@@ -43,8 +56,12 @@ export function enumerateForced(constraints: readonly Constraint[]): Deduction {
         for (let i = 0; i < cells.length; i += 1) (assigned[i] === 1 ? seenMine : seenSafe)[i] = 1;
         return;
       }
-      assigned[at] = 0; visit(at + 1);
-      if (!stopped) { assigned[at] = 1; visit(at + 1); }
+      assigned[at] = 0;
+      visit(at + 1);
+      if (!stopped) {
+        assigned[at] = 1;
+        visit(at + 1);
+      }
       assigned[at] = -1;
     }
     visit(0);

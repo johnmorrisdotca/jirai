@@ -2,23 +2,45 @@
 // header and footer, with the family's stylesheet, Jirai's own, the page's script and the compiled library beside it.
 import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
 import { API_CSS, apiPage } from "./api.mjs";
-import { FAMILY_SCRIPT, FAMILY_EMBED_BUILDER_WORDS, familyEmbedBuilder, familyFooter, familyHead, familyHeader, familyUnreviewed } from "./family-template.mjs";
+import {
+  FAMILY_SCRIPT,
+  FAMILY_EMBED_BUILDER_WORDS,
+  familyEmbedBuilder,
+  familyFooter,
+  familyHead,
+  familyHeader,
+  familyUnreviewed,
+} from "./family-template.mjs";
 
 const id = "jirai";
-const icon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f5d4a'/%3E%3Ctext x='50' y='70' font-size='42' text-anchor='middle' fill='%23f3efe4'%3E地雷%3C/text%3E%3C/svg%3E";
+const icon =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f5d4a'/%3E%3Ctext x='50' y='70' font-size='42' text-anchor='middle' fill='%23f3efe4'%3E地雷%3C/text%3E%3C/svg%3E";
 await mkdir("site", { recursive: true });
 await cp("demo", "site", { recursive: true });
 await cp("dist", "site/dist", { recursive: true });
 await cp("LICENSE", "site/LICENSE");
 const page = (await readFile("demo/index.html", "utf8"))
-  .replace("<!--family-head-->", familyHead({
-    id,
-    title: "Jirai 地雷 — Minesweeper with no-guess boards",
-    description: "Minesweeper in squares, hexagons, or on a board whose edges join. Seeded, configurable, and playable without guessing. Free and open source, in English and Japanese.",
-    ogTitle: "Jirai 地雷 — Minesweeper with no-guess boards",
-    ogDescription: "Minesweeper on shaped, hexagonal and wraparound boards, with verified no-guess fields.",
-  }))
-  .replace("<!--family-header-->", familyHeader({ id, links: [{ href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }))
+  .replace(
+    "<!--family-head-->",
+    familyHead({
+      id,
+      title: "Jirai 地雷 — Minesweeper with no-guess boards",
+      description:
+        "Minesweeper in squares, hexagons, or on a board whose edges join. Seeded, configurable, and playable without guessing. Free and open source, in English and Japanese.",
+      ogTitle: "Jirai 地雷 — Minesweeper with no-guess boards",
+      ogDescription: "Minesweeper on shaped, hexagonal and wraparound boards, with verified no-guess fields.",
+    }),
+  )
+  .replace(
+    "<!--family-header-->",
+    familyHeader({
+      id,
+      links: [
+        { href: "docs/index.html", say: "pageDocs" },
+        { href: "api.html", say: "pageApi" },
+      ],
+    }),
+  )
   .replace("<!--family-unreviewed-->", familyUnreviewed({ id }))
   .replace("<!--family-footer-->", familyFooter({ id }))
   .replace("<!--family-script-->", `<script>${FAMILY_SCRIPT}</script>`);
@@ -27,6 +49,32 @@ await writeFile("site/api.css", API_CSS);
 await writeFile("site/api.html", apiPage({ id, name: "Jirai", icon }));
 console.log("The standalone game is in site/. Serve it over HTTP to play.");
 
-await writeFile("site/family-embed-builder.js", `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`);
-const builderParts = { builderHead: familyHead({ id, title: "Jirai 地雷 — Minesweeper with no-guess boards", description: "Choose a minefield, preview it and copy its embed code." }), builderHeader: familyHeader({ id, links: [{ href: "./", say: "toGallery" }, { href: "docs/index.html", say: "pageDocs" }, { href: "api.html", say: "pageApi" }] }), unreviewed: familyUnreviewed({ id }), footer: familyFooter({ id }), script: `<script>${FAMILY_SCRIPT}</script>` };
-await writeFile("site/builder.html", (await readFile("demo/builder.html", "utf8")).replace(/<!-- family:([A-Za-z]+) -->/g, (_match, key) => builderParts[key]));
+await writeFile(
+  "site/family-embed-builder.js",
+  `export const FAMILY_EMBED_BUILDER_WORDS = ${JSON.stringify(FAMILY_EMBED_BUILDER_WORDS)};\nexport ${familyEmbedBuilder.toString()};\n`,
+);
+const builderParts = {
+  builderHead: familyHead({
+    id,
+    title: "Jirai 地雷 — Minesweeper with no-guess boards",
+    description: "Choose a minefield, preview it and copy its embed code.",
+  }),
+  builderHeader: familyHeader({
+    id,
+    links: [
+      { href: "./", say: "toGallery" },
+      { href: "docs/index.html", say: "pageDocs" },
+      { href: "api.html", say: "pageApi" },
+    ],
+  }),
+  unreviewed: familyUnreviewed({ id }),
+  footer: familyFooter({ id }),
+  script: `<script>${FAMILY_SCRIPT}</script>`,
+};
+await writeFile(
+  "site/builder.html",
+  (await readFile("demo/builder.html", "utf8")).replace(
+    /<!-- family:([A-Za-z]+) -->/g,
+    (_match, key) => builderParts[key],
+  ),
+);

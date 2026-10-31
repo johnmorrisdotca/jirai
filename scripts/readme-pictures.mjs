@@ -9,7 +9,10 @@ import { takePictures } from "./readme-pictures-lib.mjs";
 const GAME = ".play-panel";
 const address = (query, lang = "en") => `/?lang=${lang}&help=off&seed=7&noGuess=1&${query}`;
 const opened = (cell) => `[data-cell="${cell}"][data-kind="open"]`;
-const scrollTo = (selector) => (page) => page.locator(selector).evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
+const scrollTo = (selector) => (page) =>
+  page
+    .locator(selector)
+    .evaluate((element) => window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY - 8));
 
 await takePictures({
   shots: [
@@ -31,15 +34,33 @@ await takePictures({
     // Square grids count eight neighbours.
     { subject: "square", views: ["desk"], url: address("grid=square&first=40"), ready: opened(40), target: GAME },
     // Orthogonal grids count four.
-    { subject: "orthogonal", views: ["desk"], url: address("grid=orthogonal&first=40"), ready: opened(40), target: GAME },
+    {
+      subject: "orthogonal",
+      views: ["desk"],
+      url: address("grid=orthogonal&first=40"),
+      ready: opened(40),
+      target: GAME,
+    },
     // Hex grids count six, drawn as hexagons.
     { subject: "hex", views: ["desk"], url: address("grid=hex&first=40"), ready: opened(40), target: GAME },
     // Wraparound grids join opposite edges.
     { subject: "wraparound", views: ["desk"], url: address("grid=wrap&first=40"), ready: opened(40), target: GAME },
     // A heart-shaped field, medium: the cut-out cells are outside it.
-    { subject: "heart", views: ["desk"], url: address("grid=square&shape=heart&level=medium&first=136"), ready: opened(136), target: GAME },
+    {
+      subject: "heart",
+      views: ["desk"],
+      url: address("grid=square&shape=heart&level=medium&first=136"),
+      ready: opened(136),
+      target: GAME,
+    },
     // A star, on the four-neighbour rule.
-    { subject: "star", views: ["desk"], url: address("grid=orthogonal&shape=star&level=medium&first=136"), ready: opened(136), target: GAME },
+    {
+      subject: "star",
+      views: ["desk"],
+      url: address("grid=orthogonal&shape=star&level=medium&first=136"),
+      ready: opened(136),
+      target: GAME,
+    },
     // The explained hint: the status line says which cell is certain, and why.
     {
       subject: "hint",

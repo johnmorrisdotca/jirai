@@ -25,7 +25,17 @@ export type DrawOptions = { material?: Material; pieces?: Pieces; language?: Lan
  * console.log(value);
  * ```
  */
-export type CellModel = { cell: number; x: number; y: number; width: number; height: number; label: string; text: string; kind: string; hint: boolean };
+export type CellModel = {
+  cell: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  label: string;
+  text: string;
+  kind: string;
+  hint: boolean;
+};
 /** Layout and cell presentation returned by `boardModel`.
  *
  * @example

@@ -50,10 +50,52 @@ export const MOVES = { reveal: "reveal", mark: "mark", chord: "chord" } as const
  * ```
  */
 export const GRID_SPECS: Record<Grid, { offsets: readonly (readonly [number, number])[]; wrap: boolean }> = {
-  square: { offsets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], wrap: false },
-  orthogonal: { offsets: [[0,-1],[-1,0],[1,0],[0,1]], wrap: false },
-  hex: { offsets: [[-1,0],[1,0],[0,-1],[1,-1],[-1,1],[0,1]], wrap: false },
-  wrap: { offsets: [[-1,-1],[0,-1],[1,-1],[-1,0],[1,0],[-1,1],[0,1],[1,1]], wrap: true },
+  square: {
+    offsets: [
+      [-1, -1],
+      [0, -1],
+      [1, -1],
+      [-1, 0],
+      [1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    wrap: false,
+  },
+  orthogonal: {
+    offsets: [
+      [0, -1],
+      [-1, 0],
+      [1, 0],
+      [0, 1],
+    ],
+    wrap: false,
+  },
+  hex: {
+    offsets: [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [1, -1],
+      [-1, 1],
+      [0, 1],
+    ],
+    wrap: false,
+  },
+  wrap: {
+    offsets: [
+      [-1, -1],
+      [0, -1],
+      [1, -1],
+      [-1, 0],
+      [1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    wrap: true,
+  },
 };
 /** The four difficulty levels, easiest first. Each is a larger and denser field than the one before.
  *
@@ -102,7 +144,11 @@ export const LEVEL_SIZES: Record<(typeof LEVELS)[number], { width: number; heigh
  * console.log(HUGE_SIZES);
  * ```
  */
-export const HUGE_SIZES = [{ width: 32, height: 32 }, { width: 48, height: 24 }, { width: 24, height: 48 }] as const satisfies readonly { width: number; height: number }[];
+export const HUGE_SIZES = [
+  { width: 32, height: 32 },
+  { width: 48, height: 24 },
+  { width: 24, height: 48 },
+] as const satisfies readonly { width: number; height: number }[];
 /** Common minefield dimensions and mine counts. The levels, their older names, and two shapes of field.
  *
  * @example
@@ -129,7 +175,13 @@ export const PRESETS = {
  * console.log(DEFAULT_SETTINGS);
  * ```
  */
-export const DEFAULT_SETTINGS: Settings = { ...LEVEL_SIZES.easy, grid: GRIDS.square, noGuess: true, opening: "clear", seed: 1 };
+export const DEFAULT_SETTINGS: Settings = {
+  ...LEVEL_SIZES.easy,
+  grid: GRIDS.square,
+  noGuess: true,
+  opening: "clear",
+  seed: 1,
+};
 /** Largest width or height accepted by settings validation.
  *
  * @example

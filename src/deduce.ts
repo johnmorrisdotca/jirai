@@ -21,7 +21,12 @@ import type { Constraint, Deduction, VisibleGame } from "./jirai.types.ts";
  * console.log(deduce(visibleGame(game)));
  * ```
  */
-export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new Set(), enumerate = true, adjacent: readonly (readonly number[])[] = neighboursOf(game.settings)): Deduction {
+export function deduce(
+  game: VisibleGame,
+  knownMines: ReadonlySet<number> = new Set(),
+  enumerate = true,
+  adjacent: readonly (readonly number[])[] = neighboursOf(game.settings),
+): Deduction {
   const constraints: Constraint[] = [];
   const empty: Deduction = { safe: [], mines: [], reason: "none", sources: [], contradiction: false };
   for (let cell = 0; cell < game.clues.length; cell += 1) {
@@ -32,7 +37,7 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
     if (mines < 0 || mines > unknown.length) return { ...empty, contradiction: true };
     if (unknown.length) constraints.push({ cells: unknown, mines, sources: [cell] });
   }
-  const unknown = game.clues.flatMap((clue, cell) => clue === null && !knownMines.has(cell) ? [cell] : []);
+  const unknown = game.clues.flatMap((clue, cell) => (clue === null && !knownMines.has(cell) ? [cell] : []));
   const left = game.settings.mines - knownMines.size;
   if (left < 0 || left > unknown.length) return { ...empty, contradiction: true };
   const total: Constraint = { cells: unknown, mines: left, sources: [] };
@@ -41,8 +46,14 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
     if (c.mines === c.cells.length) return { ...empty, mines: c.cells, reason, sources: c.sources };
     return null;
   }
-  for (const c of constraints) { const result = forced(c, "count"); if (result !== null) return result; }
-  if (unknown.length) { const result = forced(total, "total"); if (result !== null) return result; }
+  for (const c of constraints) {
+    const result = forced(c, "count");
+    if (result !== null) return result;
+  }
+  if (unknown.length) {
+    const result = forced(total, "total");
+    if (result !== null) return result;
+  }
   // Compare a smaller clue with a larger one, including the mine counter.
   // Their difference is another exact count. Never subtract mere overlaps.
   const all = [...constraints, total];
@@ -50,7 +61,13 @@ export function deduce(game: VisibleGame, knownMines: ReadonlySet<number> = new 
   // A constraint can only be inside another that holds its first cell, so each is compared with those alone, in the same order as
   // comparing it with every other. On a large field that is a handful of neighbours instead of every clue on the board.
   const holding = new Map<number, number[]>();
-  all.forEach((c, index) => { for (const cell of c.cells) { const list = holding.get(cell); if (list === undefined) holding.set(cell, [index]); else list.push(index); } });
+  all.forEach((c, index) => {
+    for (const cell of c.cells) {
+      const list = holding.get(cell);
+      if (list === undefined) holding.set(cell, [index]);
+      else list.push(index);
+    }
+  });
   for (let i = 0; i < all.length; i += 1) {
     const inside = all[i]!.cells.length === 0 ? all.map((_, index) => index) : holding.get(all[i]!.cells[0]!)!;
     for (const j of inside) {

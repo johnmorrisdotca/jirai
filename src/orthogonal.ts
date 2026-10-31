@@ -62,11 +62,7 @@ export function newOrthogonalGame(settings: OrthogonalSettings): Game {
  * console.log(makeOrthogonalBoard(orthogonalSettings,0,{attempts:1,repair:false}).settings.grid);
  * ```
  */
-export function makeOrthogonalBoard(
-  settings: OrthogonalSettings,
-  first: number,
-  options?: GenerationOptions,
-): Board {
+export function makeOrthogonalBoard(settings: OrthogonalSettings, first: number, options?: GenerationOptions): Board {
   return makeBoard({ ...settings, grid: ORTHOGONAL_VARIANT }, first, options);
 }
 

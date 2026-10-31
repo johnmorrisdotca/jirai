@@ -30,9 +30,13 @@ export type LevelSize = Pick<Settings, "width" | "height" | "mines">;
  */
 export function levelNamed(name: unknown): Level | null {
   if (typeof name !== "string") return null;
-  const key = name.trim().toLowerCase().replace(/[\s_]+/g, "-").replace(/^extrahard$/, "extra-hard");
+  const key = name
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-")
+    .replace(/^extrahard$/, "extra-hard");
   if (Object.hasOwn(LEVEL_ALIASES, key)) return LEVEL_ALIASES[key as LevelAlias];
-  return (LEVELS as readonly string[]).includes(key) ? key as Level : null;
+  return (LEVELS as readonly string[]).includes(key) ? (key as Level) : null;
 }
 
 /**
@@ -49,14 +53,28 @@ export function levelNamed(name: unknown): Level | null {
  * console.log(levelSettings("easy",{grid:"orthogonal"}));
  * ```
  */
-export function levelSettings(level: Level | LevelAlias, board: { grid?: Grid; shape?: Settings["shape"] } = {}): LevelSize {
+export function levelSettings(
+  level: Level | LevelAlias,
+  board: { grid?: Grid; shape?: Settings["shape"] } = {},
+): LevelSize {
   const named = levelNamed(level);
   if (named === null) throw new RangeError(`Unknown level: ${String(level)}`);
   const size = LEVEL_SIZES[named];
   if ((board.shape ?? "rectangle") === "rectangle") return { ...size };
-  const probe = { ...size, grid: board.grid ?? "square", shape: board.shape, noGuess: true, opening: "clear", seed: 1 } as const;
+  const probe = {
+    ...size,
+    grid: board.grid ?? "square",
+    shape: board.shape,
+    noGuess: true,
+    opening: "clear",
+    seed: 1,
+  } as const;
   const cells = activeCells(probe).length;
-  return { width: size.width, height: size.height, mines: Math.max(1, Math.min(cells - 10, Math.round(size.mines / (size.width * size.height) * cells))) };
+  return {
+    width: size.width,
+    height: size.height,
+    mines: Math.max(1, Math.min(cells - 10, Math.round((size.mines / (size.width * size.height)) * cells))),
+  };
 }
 
 /** The outline of a huge field: one of `HUGE_SIZES`' width and height.
@@ -87,13 +105,30 @@ export type HugeSize = { width: number; height: number };
  * console.log(hugeSettings("easy",{size:{width:32,height:32}}));
  * ```
  */
-export function hugeSettings(level: Level | LevelAlias, board: { grid?: Grid; shape?: Settings["shape"]; size?: HugeSize } = {}): LevelSize {
+export function hugeSettings(
+  level: Level | LevelAlias,
+  board: { grid?: Grid; shape?: Settings["shape"]; size?: HugeSize } = {},
+): LevelSize {
   const named = levelNamed(level);
   if (named === null) throw new RangeError(`Unknown level: ${String(level)}`);
   const size = board.size ?? HUGE_SIZES[0];
-  if (!HUGE_SIZES.some((huge) => huge.width === size.width && huge.height === size.height)) throw new RangeError(`Not a huge size: ${size.width} × ${size.height}`);
+  if (!HUGE_SIZES.some((huge) => huge.width === size.width && huge.height === size.height))
+    throw new RangeError(`Not a huge size: ${size.width} × ${size.height}`);
   const own = LEVEL_SIZES[named];
-  const probe = { width: size.width, height: size.height, mines: 1, grid: board.grid ?? "square", shape: board.shape, noGuess: true, opening: "clear", seed: 1 } as const;
+  const probe = {
+    width: size.width,
+    height: size.height,
+    mines: 1,
+    grid: board.grid ?? "square",
+    shape: board.shape,
+    noGuess: true,
+    opening: "clear",
+    seed: 1,
+  } as const;
   const cells = activeCells(probe).length;
-  return { width: size.width, height: size.height, mines: Math.max(1, Math.min(cells - 10, Math.round(own.mines / (own.width * own.height) * cells))) };
+  return {
+    width: size.width,
+    height: size.height,
+    mines: Math.max(1, Math.min(cells - 10, Math.round((own.mines / (own.width * own.height)) * cells))),
+  };
 }

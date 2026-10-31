@@ -27,16 +27,19 @@ describe("the measure of a board", () => {
     const measure = measureBoard(board);
     expect(measure.solvable).toBe(false);
   });
-  for (const grid of Object.values(GRIDS) as Grid[]) it(`rises with every level on ${grid} fields, on average over ${6} seeds`, () => {
-    const means = LEVELS.map((level) => {
-      const size = levelSettings(level, { grid });
-      let sum = 0;
-      for (let seed = 1; seed <= 6; seed += 1) {
-        const settings: Settings = { ...DEFAULT_SETTINGS, ...size, grid, seed };
-        sum += measureBoard(makeBoard(settings, Math.floor(size.height / 2) * size.width + Math.floor(size.width / 2))).score;
-      }
-      return sum / 6;
+  for (const grid of Object.values(GRIDS) as Grid[])
+    it(`rises with every level on ${grid} fields, on average over ${6} seeds`, () => {
+      const means = LEVELS.map((level) => {
+        const size = levelSettings(level, { grid });
+        let sum = 0;
+        for (let seed = 1; seed <= 6; seed += 1) {
+          const settings: Settings = { ...DEFAULT_SETTINGS, ...size, grid, seed };
+          sum += measureBoard(
+            makeBoard(settings, Math.floor(size.height / 2) * size.width + Math.floor(size.width / 2)),
+          ).score;
+        }
+        return sum / 6;
+      });
+      for (let i = 1; i < means.length; i += 1) expect(means[i]).toBeGreaterThan(means[i - 1]! * 1.2);
     });
-    for (let i = 1; i < means.length; i += 1) expect(means[i]).toBeGreaterThan(means[i - 1]! * 1.2);
-  });
 });

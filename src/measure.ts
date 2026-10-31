@@ -62,7 +62,13 @@ export function measureBoard(board: Board): Measure {
   const opening = solver.safeTotal === 0 ? 0 : report.free / solver.safeTotal;
   const score = 100 * density + 100 * multiStep + report.depth / 4;
   return {
-    density, cells, opening, proofs: { count, overlap, total, enumeration }, multiStep, depth: report.depth,
-    score: Math.round(score * 10) / 10, solvable: report.solved,
+    density,
+    cells,
+    opening,
+    proofs: { count, overlap, total, enumeration },
+    multiStep,
+    depth: report.depth,
+    score: Math.round(score * 10) / 10,
+    solvable: report.solved,
   };
 }
