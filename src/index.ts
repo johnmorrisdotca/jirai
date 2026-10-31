@@ -17,7 +17,7 @@ export { seededRandom } from "./random.ts";
  * console.log(VERSION);
  * ```
  */
-export const VERSION = "0.5.0";
+export const VERSION = "0.5.1";
 
 export type { HugeSize, LevelSize } from "./levels.ts";
 export { hugeSettings, levelNamed, levelSettings } from "./levels.ts";
