@@ -6,6 +6,11 @@ All notable changes to this project are written here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- Biome replaces ESLint as the formatter and linter, with the family's shared settings in `scripts/biome-family.json`; `pnpm lint` checks formatting too, and `pnpm format` applies it. The code is formatted once to 120 columns. Nothing a user of the package sees has changed.
+- `pnpm check` also holds every source file to at most 500 lines of code (`scripts/check-size.mjs`; blank lines, comments, tests and data files are not counted). TypeScript targets ES2022 and refuses switch fallthrough and unmarked overrides.
+
 ## [0.5.0] - 2026-10-14
 
 The board is a custom element with the family's standard embed attributes and a shared builder, and the package has an English and Japanese documentation site with a checked example for every export. The dealing, the deduction, the drawing and saved games are unchanged.
