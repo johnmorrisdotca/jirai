@@ -1,7 +1,8 @@
-import { test, expect } from "@playwright/test";
-import { readFileSync, existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import process from "node:process";
+import { expect, test } from "@playwright/test";
+
 const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 const id = pkg.name.split("/")[1];
 const site = join(process.cwd(), "site");

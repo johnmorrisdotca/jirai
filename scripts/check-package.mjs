@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+
 const packed = JSON.parse(
   execFileSync("npm", ["pack", "--ignore-scripts", "--json"], {
     encoding: "utf8",

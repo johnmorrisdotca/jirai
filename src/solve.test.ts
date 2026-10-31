@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { deduce, hintFor } from "./deduce.ts";
 import { flood } from "./flood.ts";
-import { isSolvable, makeBoard } from "./generate.ts";
 import { newGame, play, visibleGame } from "./game.ts";
+import { isSolvable, makeBoard } from "./generate.ts";
 import { neighboursOf } from "./grid.ts";
 import { DEFAULT_SETTINGS, GRIDS, MARKS, STATUSES } from "./jirai.constants.ts";
+import type { Board, Grid, Settings, VisibleGame } from "./jirai.types.ts";
 import { seededRandom, shuffled } from "./random.ts";
 import { activeCell, activeCells } from "./shape.ts";
 import { Solver } from "./solve.ts";
-import type { Board, Grid, Settings, VisibleGame } from "./jirai.types.ts";
 
 /** What 0.2.1 did to decide a board: ask `deduce` for one deduction at a time and apply it. The fast solver must agree with this. */
 function referenceSolvable(board: Board, enumerate = true): boolean {
@@ -49,8 +49,8 @@ describe("the fast solver", () => {
   for (const grid of Object.values(GRIDS) as Grid[])
     it(`agrees with deduce on ${grid} fields, solvable and not, with and without enumeration`, () => {
       const random = seededRandom(7);
-      let solvable = 0,
-        stuck = 0;
+      let solvable = 0;
+      let stuck = 0;
       for (const [width, height, density] of [
         [10, 10, 0.16],
         [12, 9, 0.24],

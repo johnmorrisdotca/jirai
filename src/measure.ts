@@ -1,6 +1,6 @@
-import { Solver } from "./solve.ts";
-import type { ProofTally } from "./solve.ts";
 import type { Board } from "./jirai.types.ts";
+import type { ProofTally } from "./solve.ts";
+import { Solver } from "./solve.ts";
 
 /** How demanding a dealt board is to solve by deduction, measured by solving it.
  *

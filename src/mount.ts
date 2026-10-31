@@ -1,13 +1,13 @@
-import { activeCells } from "./shape.ts";
 import { hintFor } from "./deduce.ts";
 import { boardModel } from "./draw.ts";
 import { newGame, play, visibleGame, withBoard } from "./game.ts";
-import { MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import { validCell } from "./grid.ts";
-import { gameFromProgress, gameProgress } from "./keep.ts";
-import { JIRAI_STYLE } from "./style.ts";
-import { words } from "./strings.ts";
+import { MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import type { Board, Game, Move, Settings } from "./jirai.types.ts";
+import { gameFromProgress, gameProgress } from "./keep.ts";
+import { activeCells } from "./shape.ts";
+import { words } from "./strings.ts";
+import { JIRAI_STYLE } from "./style.ts";
 import type { DrawOptions, JiraiMount, MountOptions } from "./ui.types.ts";
 
 /**
@@ -30,14 +30,14 @@ export function mountJirai(host: HTMLElement, options: MountOptions = {}): Jirai
   const game = options.progress === undefined ? newGame(options.settings) : gameFromProgress(options.progress);
   if (game === null) throw new Error("Invalid saved Minesweeper game.");
   let current: Game = game;
-  let focus = activeCells(game.settings)[0]!,
-    marking = false,
-    hint: number | null = null;
-  let worker: Worker | null = null,
-    pending = false,
-    disposed = false;
-  let started: number | null = null,
-    elapsed = 0;
+  let focus = activeCells(game.settings)[0]!;
+  let marking = false;
+  let hint: number | null = null;
+  let worker: Worker | null = null;
+  let pending = false;
+  let disposed = false;
+  let started: number | null = null;
+  let elapsed = 0;
   const root = doc.createElement("div");
   root.className = "jr-root";
   const style = doc.createElement("style");
@@ -260,9 +260,9 @@ export function mountJirai(host: HTMLElement, options: MountOptions = {}): Jirai
     const target = event.target instanceof Element ? event.target.closest<HTMLButtonElement>("[data-cell]") : null;
     return target === null ? null : Number(target.dataset.cell);
   }
-  let hold: ReturnType<typeof setTimeout> | null = null,
-    held = false,
-    origin = { x: 0, y: 0 };
+  let hold: ReturnType<typeof setTimeout> | null = null;
+  let held = false;
+  let origin = { x: 0, y: 0 };
   const cancelHold = (): void => {
     if (hold !== null) clearTimeout(hold);
     hold = null;
@@ -306,8 +306,8 @@ export function mountJirai(host: HTMLElement, options: MountOptions = {}): Jirai
   board.addEventListener("keydown", (event) => {
     const cell = cellOf(event);
     if (cell === null) return;
-    const x = cell % current.settings.width,
-      y = Math.floor(cell / current.settings.width);
+    const x = cell % current.settings.width;
+    const y = Math.floor(cell / current.settings.width);
     const shifts: Record<string, number> = {
       ArrowLeft: x > 0 ? -1 : 0,
       ArrowRight: x < current.settings.width - 1 ? 1 : 0,

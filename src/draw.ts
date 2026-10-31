@@ -1,7 +1,7 @@
-import { activeCell } from "./shape.ts";
 import { GRIDS, MARKS, STATUSES } from "./jirai.constants.ts";
-import { words } from "./strings.ts";
 import type { Game } from "./jirai.types.ts";
+import { activeCell } from "./shape.ts";
+import { words } from "./strings.ts";
 import type { BoardModel, DrawOptions } from "./ui.types.ts";
 
 /** Where the cells sit, and what may be shown. The drawing never exposes a covered clue.
@@ -28,8 +28,8 @@ export function boardModel(game: Game, options: DrawOptions = {}): BoardModel {
   const height = hex ? (game.settings.height - 1) * 0.866 + 1.155 : game.settings.height;
   const cells = game.marks.flatMap((mark, cell) => {
     if (!activeCell(game.settings, cell)) return [];
-    const col = cell % game.settings.width,
-      row = Math.floor(cell / game.settings.width);
+    const col = cell % game.settings.width;
+    const row = Math.floor(cell / game.settings.width);
     const mine = ended && game.board?.mines[cell] === true;
     const wrong = ended && mark === MARKS.flag && !mine;
     const clue = mark === MARKS.open ? (game.board?.clues[cell] ?? 0) : 0;

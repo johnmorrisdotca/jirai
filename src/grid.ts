@@ -1,6 +1,6 @@
 import { GRID_SPECS, MAX_CELLS, MAX_SIDE } from "./jirai.constants.ts";
-import { activeCell, activeCells, SHAPES } from "./shape.ts";
 import type { Settings } from "./jirai.types.ts";
+import { activeCell, activeCells, SHAPES } from "./shape.ts";
 
 /** Reject a setting before it reaches a board allocation or a shuffle.
  *
@@ -78,8 +78,8 @@ export function neighbours(settings: Settings, cell: number): number[] {
   const y = Math.floor(cell / settings.width);
   const out = new Set<number>();
   for (const [dx, dy] of spec.offsets) {
-    let nx = x + dx,
-      ny = y + dy;
+    let nx = x + dx;
+    let ny = y + dy;
     if (spec.wrap) {
       nx = (nx + settings.width) % settings.width;
       ny = (ny + settings.height) % settings.height;

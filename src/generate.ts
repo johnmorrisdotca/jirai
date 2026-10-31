@@ -1,10 +1,10 @@
-import { activeCells } from "./shape.ts";
-import { GENERATION_ATTEMPTS } from "./jirai.constants.ts";
 import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
-import { repair } from "./repair.ts";
-import { seededRandom, shuffled } from "./random.ts";
-import { Solver } from "./solve.ts";
+import { GENERATION_ATTEMPTS } from "./jirai.constants.ts";
 import type { Board, GenerationOptions, Settings } from "./jirai.types.ts";
+import { seededRandom, shuffled } from "./random.ts";
+import { repair } from "./repair.ts";
+import { activeCells } from "./shape.ts";
+import { Solver } from "./solve.ts";
 
 /** A bounded generator must say it failed, never quietly return a guessing board.
  *
@@ -95,10 +95,10 @@ export function makeBoard(settings: Settings, first: number, options: Generation
   const adjacent = neighboursOf(settings);
   const solver = new Solver(settings, adjacent);
   const cells = settings.width * settings.height;
-  const layout = new Uint8Array(cells),
-    clues = new Int8Array(cells);
-  let best: Uint8Array | null = null,
-    fewest = Infinity;
+  const layout = new Uint8Array(cells);
+  const clues = new Int8Array(cells);
+  let best: Uint8Array | null = null;
+  let fewest = Infinity;
   const board = (attempt: number): Board => ({
     settings: { ...settings },
     mines: Array.from(layout, Boolean),

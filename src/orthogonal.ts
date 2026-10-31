@@ -2,8 +2,8 @@ import { deduce } from "./deduce.ts";
 import { newGame, visibleGame } from "./game.ts";
 import { makeBoard } from "./generate.ts";
 import { neighbours, validSettings } from "./grid.ts";
+import type { Board, Game, GenerationOptions, Settings } from "./jirai.types.ts";
 import { gameFromProgress, gameProgress } from "./keep.ts";
-import type { Board, GenerationOptions, Game, Settings } from "./jirai.types.ts";
 
 /** Identifies the four-neighbour rules and progress-code format.
  *

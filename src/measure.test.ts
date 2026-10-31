@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { makeBoard } from "./generate.ts";
 import { DEFAULT_SETTINGS, GRIDS, LEVELS } from "./jirai.constants.ts";
+import type { Grid, Settings } from "./jirai.types.ts";
 import { levelSettings } from "./levels.ts";
 import { measureBoard } from "./measure.ts";
-import type { Grid, Settings } from "./jirai.types.ts";
 
 describe("the measure of a board", () => {
   it("reports what solving it took, and what it is made of", () => {

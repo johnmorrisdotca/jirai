@@ -1,23 +1,22 @@
 // The huge fields: four times the area of a 16×16, dealt in a browser's time and still proved to need no guess.
 import { describe, expect, it, vi } from "vitest";
 import { hintFor } from "./deduce.ts";
-import { isSolvable, makeBoard } from "./generate.ts";
 import { newGame, play, visibleGame, withBoard } from "./game.ts";
-import { neighbours } from "./grid.ts";
-import { DEFAULT_SETTINGS, GRIDS, HUGE_SIZES, LEVELS, LEVEL_SIZES, MAX_CELLS } from "./jirai.constants.ts";
-import { validSettings } from "./grid.ts";
+import { isSolvable, makeBoard } from "./generate.ts";
+import { neighbours, validSettings } from "./grid.ts";
+import { DEFAULT_SETTINGS, GRIDS, HUGE_SIZES, LEVEL_SIZES, LEVELS, MAX_CELLS } from "./jirai.constants.ts";
+import type { Grid, Level, Settings } from "./jirai.types.ts";
 import { hugeSettings } from "./levels.ts";
 import { activeCells, SHAPES } from "./shape.ts";
-import type { Grid, Level, Settings } from "./jirai.types.ts";
 
 vi.setConfig({ testTimeout: 120_000 });
 
 /** The active square nearest the middle that has a neighbour, as the site opens a field. */
 function middle(settings: Settings): number {
-  const cx = (settings.width - 1) / 2,
-    cy = (settings.height - 1) / 2;
-  let best = -1,
-    nearest = Infinity;
+  const cx = (settings.width - 1) / 2;
+  const cy = (settings.height - 1) / 2;
+  let best = -1;
+  let nearest = Infinity;
   for (const cell of activeCells(settings)) {
     if (neighbours(settings, cell).length === 0) continue;
     const distance = ((cell % settings.width) - cx) ** 2 + (Math.floor(cell / settings.width) - cy) ** 2;

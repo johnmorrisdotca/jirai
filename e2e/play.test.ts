@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+
 test("a verified field, notes, hints, appearance and just-board mode", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -144,8 +145,8 @@ test("a huge field is 1,024 squares, dealt and opened in a browser's time, flagg
     const cell = [...document.querySelectorAll<HTMLElement>("[data-cell]")].find(
       (each) => each.dataset.kind === "covered",
     )!;
-    const number = cell.dataset.cell!,
-      at = performance.now();
+    const number = cell.dataset.cell!;
+    const at = performance.now();
     cell.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true, cancelable: true }));
     await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
     return {

@@ -2,6 +2,7 @@
 import assert from "node:assert/strict";
 import { readFileSync, statSync } from "node:fs";
 import { apiOf } from "./api.mjs";
+
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url));
 const pkg = JSON.parse(read("package.json"));
 const id = pkg.name.split("/")[1];

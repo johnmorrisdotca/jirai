@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { GenerationError, isSolvable, makeBoard } from "./generate.ts";
 import { neighbours, neighboursOf } from "./grid.ts";
 import { DEFAULT_SETTINGS, GENERATION_ATTEMPTS, GRIDS, LEVELS } from "./jirai.constants.ts";
+import type { Board, Grid, Settings } from "./jirai.types.ts";
 import { levelSettings } from "./levels.ts";
 import { seededRandom } from "./random.ts";
 import { activeCell, activeCells, SHAPES } from "./shape.ts";
-import type { Board, Grid, Settings } from "./jirai.types.ts";
 
 const SEEDS = 10;
 
@@ -47,8 +47,8 @@ describe("verified boards at every level, on every rule and outline", () => {
     }
   it("deals the same extra-hard field for the same seed, and a different one for another", () => {
     const settings: Settings = { ...DEFAULT_SETTINGS, ...levelSettings("extra-hard"), seed: 4 };
-    const a = makeBoard(settings, 500),
-      b = makeBoard(settings, 500);
+    const a = makeBoard(settings, 500);
+    const b = makeBoard(settings, 500);
     expect(b).toEqual(a);
     expect(makeBoard({ ...settings, seed: 5 }, 500).mines).not.toEqual(a.mines);
   });

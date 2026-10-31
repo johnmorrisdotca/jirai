@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { newGame, play, visibleGame } from "./game.ts";
-import { makeBoard, isSolvable, GenerationError } from "./generate.ts";
-import { DEFAULT_SETTINGS, GRIDS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
-import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
-import { gameFromProgress, gameProgress, dailySeed } from "./keep.ts";
-import { boardModel } from "./draw.ts";
 import { hintFor } from "./deduce.ts";
+import { boardModel } from "./draw.ts";
+import { newGame, play, visibleGame } from "./game.ts";
+import { GenerationError, isSolvable, makeBoard } from "./generate.ts";
+import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
+import { DEFAULT_SETTINGS, GRIDS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import type { Board, Game, Settings } from "./jirai.types.ts";
+import { dailySeed, gameFromProgress, gameProgress } from "./keep.ts";
 import {
   decodeOrthogonalGame,
   encodeOrthogonalGame,

@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { activeCell, activeCells } from "./shape.ts";
-import { DEFAULT_SETTINGS, GRIDS } from "./jirai.constants.ts";
-import { neighboursOf, validSettings } from "./grid.ts";
-import { makeBoard, isSolvable } from "./generate.ts";
-import { newGame, play, visibleGame } from "./game.ts";
 import { boardModel } from "./draw.ts";
-import { gameFromProgress, gameProgress } from "./keep.ts";
+import { newGame, play, visibleGame } from "./game.ts";
+import { isSolvable, makeBoard } from "./generate.ts";
+import { neighboursOf, validSettings } from "./grid.ts";
+import { DEFAULT_SETTINGS, GRIDS } from "./jirai.constants.ts";
 import type { Settings } from "./jirai.types.ts";
+import { gameFromProgress, gameProgress } from "./keep.ts";
+import { activeCell, activeCells } from "./shape.ts";
 
 describe("shaped minefields", () => {
   for (const shape of ["heart", "star", "hexagon"] as const)
@@ -14,8 +14,8 @@ describe("shaped minefields", () => {
       it(`${shape}/${grid} omits cells and retains reciprocal neighbours and proved deals`, () => {
         const settings: Settings = { ...DEFAULT_SETTINGS, width: 17, height: 17, mines: 12, shape, grid };
         for (const outside of [-1, 289, 1.5, NaN]) expect(activeCell(settings, outside)).toBe(false);
-        const cells = activeCells(settings),
-          adjacent = neighboursOf(settings);
+        const cells = activeCells(settings);
+        const adjacent = neighboursOf(settings);
         expect(cells.length).toBeGreaterThan(40);
         expect(cells.length).toBeLessThan(289);
         for (const c of cells)

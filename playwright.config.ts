@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+
 // The preview port is 6902 unless TEST_PORT says otherwise, for a machine where that one is taken.
 const port = process.env.TEST_PORT ?? "6902";
 export default defineConfig({

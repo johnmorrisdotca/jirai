@@ -1,9 +1,10 @@
-import { DEFAULT_SETTINGS } from "./jirai.constants.ts";
-import { mountJirai } from "./mount.ts";
 import { embedDay } from "./embed-day.ts";
-import { dailySeed } from "./keep.ts";
+import { DEFAULT_SETTINGS } from "./jirai.constants.ts";
 import type { Game, Grid, Language, Material, Pieces, Settings } from "./jirai.types.ts";
+import { dailySeed } from "./keep.ts";
+import { mountJirai } from "./mount.ts";
 import type { JiraiMount, MountOptions } from "./ui.types.ts";
+
 const ElementBase = typeof HTMLElement === "undefined" ? (class {} as typeof HTMLElement) : HTMLElement;
 const isOn = (value: string | null, fallback = true): boolean =>
   value === null ? fallback : !["off", "false", "no", "0"].includes(value.trim().toLowerCase());
@@ -249,8 +250,8 @@ export class JiraiElement extends ElementBase {
   #frame(): void {
     this.style.display = "block";
     this.style.maxWidth = "100%";
-    const width = Number(this.getAttribute("width")),
-      size = this.getAttribute("size");
+    const width = Number(this.getAttribute("width"));
+    const size = this.getAttribute("size");
     // Old widths are cell counts (3–60). Pixel widths begin above that domain.
     const pixels =
       this.hasAttribute("width") && width > 60 && Number.isFinite(width)
@@ -273,9 +274,9 @@ export class JiraiElement extends ElementBase {
     const theme = this.getAttribute("theme");
     this.style.colorScheme = theme === "light" || theme === "dark" ? theme : "light dark";
     this.setAttribute("data-jirai-embed", "");
-    const root = this.getRootNode(),
-      target: ParentNode =
-        typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot ? root : this.ownerDocument.head;
+    const root = this.getRootNode();
+    const target: ParentNode =
+      typeof ShadowRoot !== "undefined" && root instanceof ShadowRoot ? root : this.ownerDocument.head;
     if (target.querySelector("style[data-jirai-embed-style]") === null) {
       const style = this.ownerDocument.createElement("style");
       style.setAttribute("data-jirai-embed-style", "");
@@ -368,8 +369,8 @@ export class JiraiElement extends ElementBase {
       this.#mounted?.destroy();
       this.#mounted = null;
       this.#key = "";
-      const message = error instanceof Error ? error.message : String(error),
-        status = this.ownerDocument.createElement("p");
+      const message = error instanceof Error ? error.message : String(error);
+      const status = this.ownerDocument.createElement("p");
       status.setAttribute("role", "status");
       status.textContent = message;
       this.replaceChildren(status);

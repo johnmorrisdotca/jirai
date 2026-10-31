@@ -29,8 +29,8 @@ test("daily fields repeat after the same first opening and events cross shadow r
     const { defineBoard } = await import("../dist/element.js");
     defineBoard("article-minefield");
     defineBoard("article-minefield");
-    const host = document.createElement("div"),
-      shadow = host.attachShadow({ mode: "open" });
+    const host = document.createElement("div");
+    const shadow = host.attachShadow({ mode: "open" });
     document.body.append(host);
     const board = document.createElement("article-minefield");
     board.setAttribute("controls", "no");

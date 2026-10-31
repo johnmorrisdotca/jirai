@@ -1,9 +1,9 @@
-import { activeCell, activeCells } from "./shape.ts";
 import { flood } from "./flood.ts";
 import { makeBoard } from "./generate.ts";
-import { DEFAULT_SETTINGS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import { neighbours, neighboursOf, validCell, validSettings } from "./grid.ts";
+import { DEFAULT_SETTINGS, MARKS, MOVES, STATUSES } from "./jirai.constants.ts";
 import type { Board, Game, Move, Settings, VisibleGame } from "./jirai.types.ts";
+import { activeCell, activeCells } from "./shape.ts";
 
 /** Creates an unstarted game with covered cells and no dealt answer.
  *

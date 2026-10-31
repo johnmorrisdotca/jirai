@@ -1,8 +1,9 @@
-import { VERSION, DEFAULT_SETTINGS, validSettings } from "./dist/index.js";
-import { JiraiElement, JIRAI_EMBED_OPTION_KEYS } from "./dist/element.js";
+import { JIRAI_EMBED_OPTION_KEYS, JiraiElement } from "./dist/element.js";
 import { embedDay } from "./dist/embed-day.js";
+import { DEFAULT_SETTINGS, VERSION, validSettings } from "./dist/index.js";
 import "./dist/element-define.js";
-import { familyEmbedBuilder, FAMILY_EMBED_BUILDER_WORDS } from "./family-embed-builder.js";
+import { FAMILY_EMBED_BUILDER_WORDS, familyEmbedBuilder } from "./family-embed-builder.js";
+
 const words = {
   en: {
     ...FAMILY_EMBED_BUILDER_WORDS.en,

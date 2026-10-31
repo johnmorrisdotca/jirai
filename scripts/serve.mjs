@@ -1,6 +1,7 @@
-import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { resolve, extname } from "node:path";
+import { createServer } from "node:http";
+import { extname, resolve } from "node:path";
+
 const root = resolve("site");
 const types = {
   ".html": "text/html",
@@ -10,14 +11,14 @@ const types = {
   ".json": "application/json",
 };
 createServer(async (req, res) => {
-  const path = resolve(root, "." + new URL(req.url, "http://localhost").pathname.replace(/\/$/, "/index.html"));
-  if (path !== root && !path.startsWith(root + "/")) {
+  const path = resolve(root, `.${new URL(req.url, "http://localhost").pathname.replace(/\/$/, "/index.html")}`);
+  if (path !== root && !path.startsWith(`${root}/`)) {
     res.writeHead(403);
     res.end();
     return;
   }
   try {
-    const file = path === root ? root + "/index.html" : path;
+    const file = path === root ? `${root}/index.html` : path;
     res.setHeader("Content-Type", types[extname(file)] ?? "application/octet-stream");
     res.end(await readFile(file));
   } catch {
@@ -25,5 +26,5 @@ createServer(async (req, res) => {
     res.end("Not found");
   }
 }).listen(Number(process.env.PORT ?? 6902), "127.0.0.1", () =>
-  console.log("Jirai is ready on localhost:" + (process.env.PORT ?? 6902)),
+  console.log(`Jirai is ready on localhost:${process.env.PORT ?? 6902}`),
 );

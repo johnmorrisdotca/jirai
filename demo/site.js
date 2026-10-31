@@ -1,13 +1,14 @@
 import {
+  activeCells,
   DEFAULT_SETTINGS,
-  PRESETS,
   dailySeed,
   gameProgress,
-  activeCells,
   hugeSettings,
   levelNamed,
   levelSettings,
+  PRESETS,
 } from "./dist/index.js";
+
 // A level, or a huge field of one (`huge-easy`, `huge-extra-hard` …): its name and whether it is the huge size.
 const levelOf = (value) => {
   const huge = typeof value === "string" && value.toLowerCase().startsWith("huge-");
@@ -18,15 +19,17 @@ const sizeOfLevel = (value, board) => {
   const { level, huge } = levelOf(value);
   return (huge ? hugeSettings : levelSettings)(level, board);
 };
+
 import { mountJirai } from "./dist/play-entry.js";
 import { PAGE_WORDS } from "./words.js";
+
 const form = document.querySelector("#settings");
 const notice = document.querySelector("#notice");
 const params = new URLSearchParams(location.search);
 // A level (or one of its older names: beginner, intermediate, expert) sets the size first; an explicit width, height or mines still wins.
 if (levelOf(params.get("level"))) {
   form.elements.preset.value = params.get("level").toLowerCase().startsWith("huge-")
-    ? "huge-" + levelOf(params.get("level")).level
+    ? `huge-${levelOf(params.get("level")).level}`
     : levelOf(params.get("level")).level;
   for (const name of ["grid", "shape"]) if (params.has(name)) form.elements[name].value = params.get(name);
   applyLevel();
@@ -222,8 +225,8 @@ function applyLevel() {
 // Show which level the numbers in the form make, or Choose your own when they make none.
 function syncPreset() {
   const now = ["width", "height", "mines"].map((name) => Number(form.elements[name].value)).join("x");
-  const grid = form.elements.grid.value,
-    shape = form.elements.shape.value;
+  const grid = form.elements.grid.value;
+  const shape = form.elements.shape.value;
   const level = [
     "easy",
     "medium",

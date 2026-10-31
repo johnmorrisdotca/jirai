@@ -61,22 +61,23 @@ export function repair(
     return [...seen].filter((c) => !pinned.has(c));
   };
   let report = solver.run(clues, first, enumerate);
-  let tries = 0,
-    closest = report.remaining,
-    idle = 0;
+  let tries = 0;
+  let closest = report.remaining;
+  let idle = 0;
   const patience = Math.max(PATIENCE, 2 * solver.cells);
   while (!report.solved && tries < budget) {
     tries += 1;
-    const frontier: number[] = [],
-      covered: number[] = [],
-      cutOff: number[] = [];
+    const frontier: number[] = [];
+    const covered: number[] = [];
+    const cutOff: number[] = [];
     for (let cell = 0; cell < solver.cells; cell += 1) {
       if (solver.state[cell] !== 0) continue;
       covered.push(cell);
       if (solver.adjacent[cell]!.some((n) => solver.state[n] === 1)) frontier.push(cell);
       else if (!mines[cell] && !pinned.has(cell)) cutOff.push(cell);
     }
-    let from: number | undefined, to: number | undefined;
+    let from: number | undefined;
+    let to: number | undefined;
     const lost = cutOff.length > 0 && random() < 0.5 ? pick(cutOff, random) : undefined;
     if (lost !== undefined) {
       // A safe cell no opened clue touches is walled in by mines. Either wall one in more, or take a wall mine away.

@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SETTINGS, PRESETS } from "./jirai.constants.ts";
-import { makeBoard } from "./generate.ts";
 import { newGame, play } from "./game.ts";
-import { gameFromProgress, gameProgress } from "./keep.ts";
+import { makeBoard } from "./generate.ts";
+import { DEFAULT_SETTINGS, PRESETS } from "./jirai.constants.ts";
 import type { Grid } from "./jirai.types.ts";
+import { gameFromProgress, gameProgress } from "./keep.ts";
 
 /** Boards dealt by 0.2.1, written down from that release: the same seed must keep dealing the same field. */
 const DEALT_BY_0_2_1: {

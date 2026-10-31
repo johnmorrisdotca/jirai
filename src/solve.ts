@@ -1,7 +1,7 @@
 import { enumerateForced } from "./enumerate.ts";
 import { neighboursOf } from "./grid.ts";
-import { activeCell } from "./shape.ts";
 import type { Constraint, Settings } from "./jirai.types.ts";
+import { activeCell } from "./shape.ts";
 
 /** Why a cell was proved: one clue, two overlapping clues, the mine counter, or every arrangement of a small frontier.
  *
@@ -43,10 +43,10 @@ export type SolveReport = {
   depth: number;
 };
 
-const COVERED = 0,
-  OPEN = 1,
-  MINE = 2,
-  OUTSIDE = 3;
+const COVERED = 0;
+const OPEN = 1;
+const MINE = 2;
+const OUTSIDE = 3;
 
 /**
  * The same deductions as `deduce` (one clue, two overlapping clues, the mine counter, exact enumeration of a
@@ -80,7 +80,6 @@ export class Solver {
   private deepestMine = 0;
   private depth = 0;
   private broken = false;
-  private searching = true;
   private proved: ProofTally = { count: 0, overlap: 0, total: 0, enumeration: 0 };
 
   constructor(
@@ -200,8 +199,8 @@ export class Solver {
       this.state[cell] = OPEN;
       this.covered -= 1;
       this.opened += 1;
-      let mines = 0,
-        unknown = 0;
+      let mines = 0;
+      let unknown = 0;
       for (const n of this.adjacent[cell]!) {
         const s = this.state[n];
         if (s === MINE) mines += 1;
@@ -253,8 +252,8 @@ export class Solver {
   private step(cell: number): boolean {
     if (this.broken || this.state[cell] !== OPEN || this.unknown[cell] === 0) return false;
     const around = this.adjacent[cell]!;
-    const unknown = this.unknown[cell]!,
-      need = this.need[cell]!;
+    const unknown = this.unknown[cell]!;
+    const need = this.need[cell]!;
     if (need < 0 || need > unknown) {
       this.broken = true;
       return false;
@@ -281,7 +280,8 @@ export class Solver {
         let common = 0;
         for (const y of this.adjacent[other]!) if (this.state[y] === COVERED && this.marks[y] === mine) common += 1;
         const there = this.unknown[other]!;
-        let rest: number[], mines: number;
+        let rest: number[];
+        let mines: number;
         if (common === there && there < unknown) {
           rest = around.filter((n) => this.state[n] === COVERED && !this.adjacent[other]!.includes(n));
           mines = need - this.need[other]!;
@@ -313,8 +313,8 @@ export class Solver {
     }
     for (let cell = 0; cell < this.cells; cell += 1) {
       if (this.state[cell] !== OPEN || this.unknown[cell] === 0) continue;
-      const outside = covered.length - this.unknown[cell]!,
-        mines = this.left - this.need[cell]!;
+      const outside = covered.length - this.unknown[cell]!;
+      const mines = this.left - this.need[cell]!;
       if (outside === 0 || (mines !== 0 && mines !== outside)) continue;
       const mark = ++this.stamp;
       for (const n of this.adjacent[cell]!) if (this.state[n] === COVERED) this.marks[n] = mark;

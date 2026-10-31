@@ -25,27 +25,27 @@ export const SHAPES = ["rectangle", "heart", "star", "hexagon"] as const;
  */
 export function activeCell(settings: Settings, cell: number): boolean {
   if (!Number.isInteger(cell) || cell < 0 || cell >= settings.width * settings.height) return false;
-  const col = cell % settings.width,
-    row = Math.floor(cell / settings.width);
-  const x = (2 * (col + 0.5)) / settings.width - 1,
-    y = (2 * (row + 0.5)) / settings.height - 1;
+  const col = cell % settings.width;
+  const row = Math.floor(cell / settings.width);
+  const x = (2 * (col + 0.5)) / settings.width - 1;
+  const y = (2 * (row + 0.5)) / settings.height - 1;
   switch (settings.shape ?? "rectangle") {
     case "heart": {
-      const hx = x * 1.15,
-        hy = -y * 1.25 + 0.15;
+      const hx = x * 1.15;
+      const hy = -y * 1.25 + 0.15;
       return (hx * hx + hy * hy - 1) ** 3 - hx * hx * hy ** 3 <= 0;
     }
     case "star": {
       // A filled five-point polygon, never a decorative overlay on hidden square cells.
       const vertices = Array.from({ length: 10 }, (_, i) => {
-        const angle = -Math.PI / 2 + (i * Math.PI) / 5,
-          radius = i % 2 ? 0.48 : 1;
+        const angle = -Math.PI / 2 + (i * Math.PI) / 5;
+        const radius = i % 2 ? 0.48 : 1;
         return [Math.cos(angle) * radius, Math.sin(angle) * radius] as const;
       });
       let inside = false;
       for (let i = 0, j = 9; i < 10; j = i++) {
-        const [xi, yi] = vertices[i]!,
-          [xj, yj] = vertices[j]!;
+        const [xi, yi] = vertices[i]!;
+        const [xj, yj] = vertices[j]!;
         if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
       }
       return inside;

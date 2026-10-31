@@ -1,6 +1,6 @@
 import { HUGE_SIZES, LEVEL_ALIASES, LEVEL_SIZES, LEVELS } from "./jirai.constants.ts";
-import { activeCells } from "./shape.ts";
 import type { Grid, Level, LevelAlias, Settings } from "./jirai.types.ts";
+import { activeCells } from "./shape.ts";
 
 /** Board size and mine count a level asks for.
  *

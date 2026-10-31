@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_SETTINGS, GRIDS, LEVELS, LEVEL_ALIASES, LEVEL_SIZES, PRESETS } from "./jirai.constants.ts";
 import { validSettings } from "./grid.ts";
+import { DEFAULT_SETTINGS, GRIDS, LEVEL_ALIASES, LEVEL_SIZES, LEVELS, PRESETS } from "./jirai.constants.ts";
+import type { Grid, Settings } from "./jirai.types.ts";
 import { levelNamed, levelSettings } from "./levels.ts";
 import { activeCells, SHAPES } from "./shape.ts";
-import type { Grid, Settings } from "./jirai.types.ts";
 
 describe("the four levels", () => {
   it("are easy, medium, hard and extra-hard, each larger and denser than the one before", () => {
     expect(LEVELS).toEqual(["easy", "medium", "hard", "extra-hard"]);
     for (let i = 1; i < LEVELS.length; i += 1) {
-      const before = LEVEL_SIZES[LEVELS[i - 1]!],
-        level = LEVEL_SIZES[LEVELS[i]!];
+      const before = LEVEL_SIZES[LEVELS[i - 1]!];
+      const level = LEVEL_SIZES[LEVELS[i]!];
       expect(level.width * level.height).toBeGreaterThan(before.width * before.height);
       expect(level.mines / (level.width * level.height)).toBeGreaterThan(before.mines / (before.width * before.height));
     }
@@ -75,8 +75,8 @@ describe("the four levels", () => {
           expect(size.mines).toBeGreaterThan(before);
           before = size.mines;
           if (shape !== "rectangle") {
-            const cells = activeCells(settings).length,
-              own = LEVEL_SIZES[level];
+            const cells = activeCells(settings).length;
+            const own = LEVEL_SIZES[level];
             expect(Math.abs(size.mines / cells - own.mines / (own.width * own.height))).toBeLessThan(0.08);
           }
         }

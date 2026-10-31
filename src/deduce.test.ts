@@ -1,9 +1,9 @@
 import { expect, it } from "vitest";
 import { deduce, hintFor } from "./deduce.ts";
 import { enumerateForced } from "./enumerate.ts";
-import { DEFAULT_SETTINGS, MARKS, STATUSES } from "./jirai.constants.ts";
 import { neighbours } from "./grid.ts";
-import type { VisibleGame, Grid } from "./jirai.types.ts";
+import { DEFAULT_SETTINGS, MARKS, STATUSES } from "./jirai.constants.ts";
+import type { Grid, VisibleGame } from "./jirai.types.ts";
 
 it("extracts the 1–2–1 wall pattern without trusting flags", () => {
   const game: VisibleGame = {
