@@ -86,4 +86,24 @@ await takePictures({
       },
     },
   ],
+  // The family's thumbnail, dark thumbnail and icon (scripts/family-thumbnail.mjs): the hexagonal no-guess field on its
+  // wooden board, opened from its middle; the icon is the cells of a small hexagonal field of its own, opened the same way.
+  thumbnail: {
+    url: address("grid=hex&first=40"),
+    // The card's field opens cell 40 and the icon's cell 12: either way an opened cell says the board is dealt.
+    ready: '#game [data-kind="open"]',
+    target: "#game .jr-scroll",
+    // The icon: the cells alone, off the board, their numbers set larger so they still read at 40 px.
+    icon: {
+      url: address("grid=hex&width=5&height=5&mines=4&first=12"),
+      target: "#game .jr-board",
+      async prepare(page) {
+        await page.addStyleTag({
+          content:
+            "#game .jr-cell { font-size: 52px !important; } #game .jr-scroll { border-color: transparent !important; }",
+        });
+      },
+    },
+    label: "Jirai 地雷",
+  },
 });

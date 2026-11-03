@@ -11,8 +11,11 @@ import {
   familyHeader,
   familyUnreviewed,
 } from "./family-template.mjs";
+import { publishThumbnails, thumbnailHead } from "./family-thumbnail.mjs";
 
 const id = "jirai";
+const pkg = JSON.parse(await readFile("package.json", "utf8"));
+const ALT = "Jirai: a hexagonal minesweeper field on a wooden board, opened from its middle, with its numbers showing.";
 const icon =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232f5d4a'/%3E%3Ctext x='50' y='70' font-size='42' text-anchor='middle' fill='%23f3efe4'%3E地雷%3C/text%3E%3C/svg%3E";
 await mkdir("site", { recursive: true });
@@ -41,10 +44,13 @@ const page = (await readFile("demo/index.html", "utf8"))
       ],
     }),
   )
+  .replace("<!--family-thumbnail-->", () => thumbnailHead(pkg, { alt: ALT }))
   .replace("<!--family-unreviewed-->", familyUnreviewed({ id }))
   .replace("<!--family-footer-->", familyFooter({ id }))
   .replace("<!--family-script-->", `<script>${FAMILY_SCRIPT}</script>`);
 await writeFile("site/index.html", page);
+// The family's card, dark card and icon, at <site>/thumbnail.png, thumbnail-dark.png and icon.png.
+publishThumbnails(".", "site");
 await writeFile("site/api.css", API_CSS);
 await writeFile("site/api.html", apiPage({ id, name: "Jirai", icon }));
 console.log("The standalone game is in site/. Serve it over HTTP to play.");

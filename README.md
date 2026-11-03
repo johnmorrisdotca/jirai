@@ -1,3 +1,5 @@
+<p align="center"><a href="https://johnmorrisdotca.github.io/jirai/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/thumbnail-dark.png"><img src="https://raw.githubusercontent.com/johnmorrisdotca/jirai/main/docs/images/thumbnail.png" alt="Jirai: a hexagonal minesweeper field on a wooden board, opened from its middle, with its numbers showing." width="1200"></picture></a></p>
+
 <h1 align="center">Jirai <sub>地雷</sub> — Minesweeper with no-guess boards</h1>
 
 <p align="center"><strong>Every number is a clue.</strong><br>
